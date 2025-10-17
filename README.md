@@ -28,7 +28,7 @@ dotfiles/
 
 ### WSL環境でのPowerShell設定
 
-このdotfilesリポジトリはWSL環境からWindows側のPowerShell設定も管理できます。
+このdotfilesリポジトリはWSL環境とWindows側のPowerShell設定を統合管理できます。
 
 **PowerShell設定の特徴：**
 - PSReadLineによる高度なコマンドライン編集
@@ -38,17 +38,26 @@ dotfiles/
 - Git統合エイリアス
 - カスタムプロンプト
 
+**注意：** このリポジトリはWindows側（`C:\Users\kento\dotfiles\`）に配置されており、WSL環境からはシンボリックリンクでアクセスします。
+
 ### 初回セットアップ
 
 1. リポジトリをクローンまたはダウンロード
 2. インストールスクリプトを実行
 
+**WSL環境から：**
 ```bash
 cd ~/dotfiles
 ./install.sh install
 
-# PowerShell設定もインストール（WSL環境の場合）
+# PowerShell設定もインストール
 ./install-powershell.sh install
+```
+
+**Windows環境から：**
+```powershell
+cd C:\Users\kento\dotfiles
+.\install-powershell.ps1 -Action install
 ```
 
 ### 新しい設定ファイルの追加
@@ -68,23 +77,34 @@ git commit -m "Add vim configuration"
 
 他の環境で設定を同期する場合：
 
+**WSL環境から：**
 ```bash
+cd ~/dotfiles
 git pull origin main
 ./install.sh install
-
-# PowerShell設定も同期（WSL環境の場合）
 ./install-powershell.sh install
+```
+
+**Windows環境から：**
+```powershell
+cd C:\Users\kento\dotfiles
+git pull origin main
+.\install-powershell.ps1 -Action install
 ```
 
 ### アンインストール
 
 シンボリックリンクを削除して元の設定に戻す：
 
+**WSL環境から：**
 ```bash
 ./install.sh uninstall
-
-# PowerShell設定もアンインストール
 ./install-powershell.sh uninstall
+```
+
+**Windows環境から：**
+```powershell
+.\install-powershell.ps1 -Action uninstall
 ```
 
 ## インストールスクリプトの機能
