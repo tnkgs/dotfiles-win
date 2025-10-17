@@ -32,9 +32,36 @@ create_symlink() {
     ln -s "$source" "$target"
 }
 
+# Function to install Powerlevel10k
+install_powerlevel10k() {
+    local P10K_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+    
+    if [ -d "$P10K_DIR" ]; then
+        echo -e "${YELLOW}Powerlevel10k already installed. Updating...${NC}"
+        cd "$P10K_DIR" && git pull
+    else
+        echo -e "${GREEN}Installing Powerlevel10k...${NC}"
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$P10K_DIR"
+    fi
+    
+    echo -e "${GREEN}Powerlevel10k installation completed!${NC}"
+    echo -e "${YELLOW}Run 'p10k configure' to configure Powerlevel10k after restarting your shell${NC}"
+}
+
 # Function to install dotfiles
 install_dotfiles() {
     echo -e "${GREEN}Installing dotfiles...${NC}"
+    
+    # Install Powerlevel10k theme
+    if [ -d "$HOME/.oh-my-zsh" ]; then
+        install_powerlevel10k
+    else
+        echo -e "${YELLOW}Oh My Zsh not found. Skipping Powerlevel10k installation.${NC}"
+        echo -e "${YELLOW}Install Oh My Zsh first: https://ohmyz.sh/${NC}"
+    fi
+    
+    echo ""
+    echo -e "${GREEN}Installing dotfile symlinks...${NC}"
     
     # List of files to symlink (relative to dotfiles directory)
     files=(
@@ -44,6 +71,7 @@ install_dotfiles() {
         ".vimrc"
         ".tmux.conf"
         ".gitignore_global"
+        ".p10k.zsh"
         "Microsoft.PowerShell_profile.ps1"
     )
     
@@ -87,6 +115,7 @@ uninstall_dotfiles() {
         ".vimrc"
         ".tmux.conf"
         ".gitignore_global"
+        ".p10k.zsh"
     )
     
     for file in "${files[@]}"; do

@@ -34,7 +34,7 @@ function Install-PowerShellProfile {
     Write-ColorOutput "Installing PowerShell profile..." "Green"
     
     $profilePath = $PROFILE
-    $wslSourcePath = "\\wsl.localhost\Ubuntu\home\kento\dotfiles\Microsoft.PowerShell_profile.ps1"
+    $wslSourcePath = "C:\Users\kento\dotfiles\Microsoft.PowerShell_profile.ps1"
     
     # Create profile directory if it doesn't exist
     $profileDir = Split-Path $profilePath -Parent

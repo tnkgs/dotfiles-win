@@ -115,3 +115,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# タイムゾーンを日本時間に設定
+export TZ="Asia/Tokyo"

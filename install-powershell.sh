@@ -5,65 +5,12 @@
 
 set -e
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WINDOWS_PROFILE_DIR="/mnt/c/Users/kento/Documents/PowerShell"
-WINDOWS_PROFILE_FILE="$WINDOWS_PROFILE_DIR/Microsoft.PowerShell_profile.ps1"
-
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
-
-# Function to create Windows directory
-create_windows_directory() {
-    local dir="$1"
-    if [ ! -d "$dir" ]; then
-        echo -e "${BLUE}Creating Windows directory: $dir${NC}"
-        mkdir -p "$dir"
-    fi
-}
-
-# Function to create Windows symlink to WSL file
-create_windows_symlink() {
-    local source="$1"
-    local target="$2"
-    local name="$3"
-    
-    # Create target directory if it doesn't exist
-    create_windows_directory "$(dirname "$target")"
-    
-    # Convert WSL path to Windows WSL path
-    local wsl_source=$(echo "$source" | sed 's|/mnt/c/|C:\\|g' | sed 's|/|\\|g')
-    local wsl_source_alt="\\\\wsl.localhost\\Ubuntu$(echo "$source" | sed 's|/home/kento|/home/kento|g' | sed 's|/|\\|g')"
-    
-    if [ -e "$target" ]; then
-        echo -e "${YELLOW}Backing up existing file: $target -> $target.backup${NC}"
-        cp "$target" "$target.backup" 2>/dev/null || mv "$target" "$target.backup"
-    fi
-    
-    echo -e "${GREEN}Creating Windows symlink: $name${NC}"
-    echo -e "${BLUE}Source (WSL): $source${NC}"
-    echo -e "${BLUE}Target (Windows): $target${NC}"
-    
-    # Use PowerShell to create the symlink from Windows side
-    pwsh.exe -Command "
-        try {
-            if (Test-Path '$target') {
-                Remove-Item '$target' -Force
-            }
-            New-Item -ItemType SymbolicLink -Path '$target' -Target '$wsl_source_alt' -Force
-            Write-Host 'Symlink created successfully' -ForegroundColor Green
-        } catch {
-            Write-Host 'Failed to create symlink:' -ForegroundColor Red
-            Write-Host \$_.Exception.Message -ForegroundColor Red
-            # Fallback: copy the file instead
-            Write-Host 'Falling back to file copy...' -ForegroundColor Yellow
-            Copy-Item '$wsl_source_alt' '$target' -Force
-        }
-    "
-}
 
 # Function to install PowerShell profile
 install_powershell_profile() {

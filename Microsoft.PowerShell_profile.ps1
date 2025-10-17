@@ -62,9 +62,12 @@ function wsl {
 }
 
 # Git integration
-function git-status { git status }
-function git-log { git log --oneline --graph --decorate }
-function git-branch { git branch -a }
+function Get-GitStatus { git status }
+function Get-GitLog { git log --oneline --graph --decorate }
+function Get-GitBranch { git branch -a }
+Set-Alias -Name gs -Value Get-GitStatus
+Set-Alias -Name gl -Value Get-GitLog
+Set-Alias -Name gb -Value Get-GitBranch
 
 # Navigation helpers
 function .. { Set-Location .. }
@@ -76,9 +79,10 @@ function Edit-Profile {
     code $PROFILE 
 }
 
-function Reload-Profile {
+function Import-Profile {
     . $PROFILE
 }
+Set-Alias -Name reload -Value Import-Profile
 
 # Environment variables
 $env:EDITOR = "code"
