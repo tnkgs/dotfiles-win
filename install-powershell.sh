@@ -69,16 +69,14 @@ create_windows_symlink() {
 install_powershell_profile() {
     echo -e "${GREEN}Installing PowerShell profile...${NC}"
     
-    local source_file="$DOTFILES_DIR/Microsoft.PowerShell_profile.ps1"
-    local ps_script="$DOTFILES_DIR/install-powershell.ps1"
+    local windows_dotfiles="/mnt/c/Users/kento/dotfiles"
+    local ps_script="$windows_dotfiles/install-powershell.ps1"
     
-    if [ -f "$source_file" ] && [ -f "$ps_script" ]; then
-        echo -e "${BLUE}Running PowerShell installer script...${NC}"
-        pwsh.exe -File "$ps_script" -Action install
+    if [ -f "$ps_script" ]; then
+        echo -e "${BLUE}Running PowerShell installer script from Windows directory...${NC}"
+        cd "$windows_dotfiles" && pwsh.exe -File "install-powershell.ps1" -Action install
     else
-        echo -e "${RED}Required files not found:${NC}"
-        [ ! -f "$source_file" ] && echo -e "${RED}  - $source_file${NC}"
-        [ ! -f "$ps_script" ] && echo -e "${RED}  - $ps_script${NC}"
+        echo -e "${RED}PowerShell installer script not found: $ps_script${NC}"
         exit 1
     fi
 }
@@ -87,11 +85,12 @@ install_powershell_profile() {
 uninstall_powershell_profile() {
     echo -e "${YELLOW}Uninstalling PowerShell profile...${NC}"
     
-    local ps_script="$DOTFILES_DIR/install-powershell.ps1"
+    local windows_dotfiles="/mnt/c/Users/kento/dotfiles"
+    local ps_script="$windows_dotfiles/install-powershell.ps1"
     
     if [ -f "$ps_script" ]; then
-        echo -e "${BLUE}Running PowerShell uninstaller script...${NC}"
-        pwsh.exe -File "$ps_script" -Action uninstall
+        echo -e "${BLUE}Running PowerShell uninstaller script from Windows directory...${NC}"
+        cd "$windows_dotfiles" && pwsh.exe -File "install-powershell.ps1" -Action uninstall
     else
         echo -e "${RED}PowerShell installer script not found: $ps_script${NC}"
         exit 1
@@ -117,11 +116,12 @@ check_powershell() {
 test_powershell_profile() {
     echo -e "${BLUE}Testing PowerShell profile...${NC}"
     
-    local ps_script="$DOTFILES_DIR/install-powershell.ps1"
+    local windows_dotfiles="/mnt/c/Users/kento/dotfiles"
+    local ps_script="$windows_dotfiles/install-powershell.ps1"
     
     if [ -f "$ps_script" ]; then
-        echo -e "${BLUE}Running PowerShell test script...${NC}"
-        pwsh.exe -File "$ps_script" -Action test
+        echo -e "${BLUE}Running PowerShell test script from Windows directory...${NC}"
+        cd "$windows_dotfiles" && pwsh.exe -File "install-powershell.ps1" -Action test
     else
         echo -e "${RED}PowerShell installer script not found: $ps_script${NC}"
         exit 1
