@@ -2,6 +2,19 @@
 
 # PowerShell Profile installer script for WSL environment
 # This script creates symbolic links from the dotfiles directory to Windows PowerShell profile location
+#
+# Features:
+# - Calls install-powershell.ps1 from WSL
+# - Installs PowerShell profile + modules (Terminal-Icons, posh-git)
+# - Auto-installs Moralerspace HWJPDOC font (Japanese programming font)
+# - Validates PowerShell installation
+# - Syntax checking
+#
+# Prerequisites (manual installation):
+# - Oh My Posh: winget install JanDeDobbeleer.OhMyPosh
+#
+# Recommended font setting:
+# - 'Moralerspace Argon HWJPDOC', 'Consolas', monospace
 
 set -e
 
@@ -75,6 +88,22 @@ test_powershell_profile() {
     fi
 }
 
+# Function to install font only
+install_font_only() {
+    echo -e "${BLUE}Installing Moralerspace HWJPDOC font...${NC}"
+    
+    local windows_dotfiles="/mnt/c/Users/kento/dotfiles"
+    local ps_script="$windows_dotfiles/install-powershell.ps1"
+    
+    if [ -f "$ps_script" ]; then
+        echo -e "${BLUE}Running font installer from Windows directory...${NC}"
+        cd "$windows_dotfiles" && pwsh.exe -File "install-powershell.ps1" -Action font
+    else
+        echo -e "${RED}PowerShell installer script not found: $ps_script${NC}"
+        exit 1
+    fi
+}
+
 # Main script
 case "${1:-install}" in
     "install")
@@ -93,13 +122,33 @@ case "${1:-install}" in
     "check")
         check_powershell
         ;;
+    "font")
+        install_font_only
+        ;;
     "help"|"-h"|"--help")
-        echo "Usage: $0 [install|uninstall|test|check|help]"
-        echo "  install   - Install PowerShell profile (default)"
-        echo "  uninstall - Remove PowerShell profile symlink"
+        echo -e "${BLUE}PowerShell Profile Installer (WSL Wrapper)${NC}"
+        echo -e "${BLUE}==========================================${NC}"
+        echo ""
+        echo "Usage: $0 [install|uninstall|test|check|font|help]"
+        echo ""
+        echo -e "${YELLOW}Commands:${NC}"
+        echo "  install   - Install PowerShell profile + modules + Moralerspace font"
+        echo "  uninstall - Remove PowerShell profile"
         echo "  test      - Test PowerShell profile syntax"
         echo "  check     - Check PowerShell installation"
+        echo "  font      - Install Moralerspace HWJPDOC font only"
         echo "  help      - Show this help message"
+        echo ""
+        echo -e "${YELLOW}Prerequisites (manual installation):${NC}"
+        echo -e "${BLUE}  • Oh My Posh:  winget install JanDeDobbeleer.OhMyPosh${NC}"
+        echo ""
+        echo -e "${YELLOW}Auto-installed items:${NC}"
+        echo "  • Terminal-Icons       - Colorful file/folder icons"
+        echo "  • posh-git             - Enhanced Git integration"
+        echo "  • Moralerspace HWJPDOC - Japanese programming font"
+        echo ""
+        echo -e "${YELLOW}Recommended font setting:${NC}"
+        echo -e "${BLUE}  'Moralerspace Argon HWJPDOC', 'Consolas', monospace${NC}"
         ;;
     *)
         echo -e "${RED}Unknown option: $1${NC}"

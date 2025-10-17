@@ -6,6 +6,22 @@
 
 # Import modules
 Import-Module PSReadLine -ErrorAction SilentlyContinue
+Import-Module Terminal-Icons -ErrorAction SilentlyContinue
+Import-Module posh-git -ErrorAction SilentlyContinue
+
+# Initialize Oh My Posh with a theme
+try {
+    # Use custom theme from dotfiles
+    $customTheme = "C:\Users\kento\dotfiles\ohmyposh-theme.omp.json"
+    if (Test-Path $customTheme) {
+        oh-my-posh init pwsh --config $customTheme | Invoke-Expression
+    } else {
+        # Fallback to default theme
+        oh-my-posh init pwsh | Invoke-Expression
+    }
+} catch {
+    Write-Host "⚠️  Oh My Posh not configured. Using basic prompt." -ForegroundColor Yellow
+}
 
 # PSReadLine configuration
 if (Get-Module -ListAvailable -Name PSReadLine) {
@@ -34,22 +50,10 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
 }
 
 # Aliases
+# Note: ls is handled by Terminal-Icons module automatically
 Set-Alias -Name ll -Value Get-ChildItem
-Set-Alias -Name la -Value Get-ChildItem
 Set-Alias -Name grep -Value Select-String
 Set-Alias -Name which -Value Get-Command
-
-# Functions
-function Get-ChildItemColor {
-    Get-ChildItem | ForEach-Object {
-        if ($_.PSIsContainer) {
-            Write-Host $_.Name -ForegroundColor Blue
-        } else {
-            Write-Host $_.Name -ForegroundColor White
-        }
-    }
-}
-Set-Alias -Name ls -Value Get-ChildItemColor
 
 # WSL integration
 function wsl {
@@ -61,51 +65,23 @@ function wsl {
     }
 }
 
-# Git integration
-function Get-GitStatus { git status }
-function Get-GitLog { git log --oneline --graph --decorate }
-function Get-GitBranch { git branch -a }
-Set-Alias -Name gs -Value Get-GitStatus
-Set-Alias -Name gl -Value Get-GitLog
-Set-Alias -Name gb -Value Get-GitBranch
+# Git shortcuts
+# Note: posh-git provides enhanced Git info in prompt
+function gst { git status }
 
-# Navigation helpers
+# Navigation shortcuts
 function .. { Set-Location .. }
 function ... { Set-Location ..\.. }
-function .... { Set-Location ..\..\.. }
 
-# Quick edit functions
-function Edit-Profile { 
-    code $PROFILE 
-}
-
-function Import-Profile {
-    . $PROFILE
-}
+# Profile management
+function Edit-Profile { code $PROFILE }
+function Import-Profile { . $PROFILE }
 Set-Alias -Name reload -Value Import-Profile
 
 # Environment variables
 $env:EDITOR = "code"
 
-# Prompt customization
-function prompt {
-    $currentPath = (Get-Location).Path
-    $gitBranch = ""
-    
-    # Check if we're in a git repository
-    if (Test-Path .git) {
-        $gitBranch = " ($(git branch --show-current 2>$null))"
-    }
-    
-    # Set prompt with colors
-    Write-Host "PS " -NoNewline -ForegroundColor Green
-    Write-Host "$currentPath" -NoNewline -ForegroundColor Cyan
-    Write-Host "$gitBranch" -NoNewline -ForegroundColor Yellow
-    Write-Host "> " -NoNewline -ForegroundColor Green
-    
-    return " "
-}
-
 # Welcome message
-Write-Host "PowerShell Profile Loaded Successfully!" -ForegroundColor Green
-Write-Host "Type 'Get-Help' for help or 'Edit-Profile' to edit this profile" -ForegroundColor Gray
+Write-Host "🚀 PowerShell Profile Loaded!" -ForegroundColor Green
+Write-Host "   Theme: Custom (ohmyposh-theme.omp.json) | Font: Moralerspace Neon" -ForegroundColor Cyan
+Write-Host "   Modules: Terminal-Icons, posh-git, PSReadLine" -ForegroundColor Gray
