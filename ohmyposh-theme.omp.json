@@ -112,6 +112,19 @@
           "type": "ruby"
         },
         {
+          "background": "#ce412b",
+          "foreground": "#ffffff",
+          "invert_powerline": true,
+          "powerline_symbol": "\ue0b2",
+          "properties": {
+            "display_mode": "files",
+            "fetch_version": true
+          },
+          "style": "powerline",
+          "template": " {{ if .Error }}{{ .Error }}{{ else }}{{ .Full }}{{ end }} \ue7a8 ",
+          "type": "rust"
+        },
+        {
           "background": "#FEAC19",
           "foreground": "#ffffff",
           "invert_powerline": true,

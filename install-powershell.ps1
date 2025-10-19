@@ -44,6 +44,42 @@ function Test-PowerShellInstallation {
     }
 }
 
+function Initialize-UserBinDirectory {
+    Write-ColorOutput "Setting up user bin directory..." "Green"
+    
+    $binPath = "C:\Users\kento\bin"
+    
+    # Create bin directory if it doesn't exist
+    if (!(Test-Path $binPath)) {
+        Write-ColorOutput "Creating bin directory: $binPath" "Blue"
+        New-Item -ItemType Directory -Path $binPath -Force | Out-Null
+        Write-ColorOutput "Bin directory created successfully!" "Green"
+    } else {
+        Write-ColorOutput "Bin directory already exists: $binPath" "Yellow"
+    }
+    
+    # Add to PATH if not already present
+    try {
+        $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
+        
+        if ($currentPath -notlike "*$binPath*") {
+            Write-ColorOutput "Adding bin directory to user PATH..." "Blue"
+            $newPath = if ($currentPath) { "$currentPath;$binPath" } else { $binPath }
+            [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+            Write-ColorOutput "User bin directory added to PATH successfully!" "Green"
+            Write-ColorOutput "" "White"
+            Write-ColorOutput "NOTE: You need to restart PowerShell for PATH changes to take effect." "Yellow"
+        } else {
+            Write-ColorOutput "Bin directory is already in PATH" "Yellow"
+        }
+        
+        return $true
+    } catch {
+        Write-ColorOutput "Failed to update PATH: $($_.Exception.Message)" "Red"
+        return $false
+    }
+}
+
 function Install-MoralerspaceFont {
     Write-ColorOutput "Installing Moralerspace HWJPDOC font..." "Green"
     
@@ -170,6 +206,10 @@ function Install-PowerShellProfile {
         Copy-Item $profilePath "$profilePath.backup" -Force
     }
     
+    # Setup user bin directory
+    Write-ColorOutput "" "White"
+    Initialize-UserBinDirectory
+    
     # Install required modules
     if (!(Install-PowerShellModules)) {
         Write-ColorOutput "Warning: Some modules failed to install" "Yellow"
@@ -261,12 +301,15 @@ function Show-Help {
     Write-ColorOutput "  • Oh My Posh:  winget install JanDeDobbeleer.OhMyPosh" "Cyan"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Auto-installed items:" "Yellow"
+    Write-ColorOutput "  • User bin directory   - C:\Users\kento\bin (added to PATH)" "White"
     Write-ColorOutput "  • Terminal-Icons       - Colorful file/folder icons" "White"
     Write-ColorOutput "  • posh-git             - Enhanced Git integration" "White"
     Write-ColorOutput "  • Moralerspace HWJPDOC - Japanese programming font" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Recommended font setting:" "Yellow"
     Write-ColorOutput "  'Moralerspace Argon HWJPDOC', 'Consolas', monospace" "Cyan"
+    Write-ColorOutput "" "White"
+    Write-ColorOutput "Note: The bin directory is used for custom tools and scripts" "Gray"
 }
 
 # Main script logic
