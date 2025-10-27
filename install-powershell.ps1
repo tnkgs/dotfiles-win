@@ -80,6 +80,32 @@ function Initialize-UserBinDirectory {
     }
 }
 
+function Install-WeztermConfig {
+    Write-ColorOutput "Installing WezTerm configuration..." "Green"
+    
+    $weztermSourcePath = "C:\Users\kento\dotfiles\.wezterm.lua"
+    $weztermDestPath = "C:\Users\kento\.wezterm.lua"
+    
+    try {
+        # Backup existing config
+        if (Test-Path $weztermDestPath) {
+            Write-ColorOutput "Backing up existing WezTerm config: $weztermDestPath -> $weztermDestPath.backup" "Yellow"
+            Copy-Item $weztermDestPath "$weztermDestPath.backup" -Force
+        }
+        
+        # Copy WezTerm config
+        Write-ColorOutput "Copying WezTerm config to home directory..." "Blue"
+        Copy-Item $weztermSourcePath $weztermDestPath -Force
+        Write-ColorOutput "WezTerm config installed successfully!" "Green"
+        Write-ColorOutput "Config location: $weztermDestPath" "Blue"
+        
+        return $true
+    } catch {
+        Write-ColorOutput "Failed to install WezTerm config: $($_.Exception.Message)" "Red"
+        return $false
+    }
+}
+
 function Install-MoralerspaceFont {
     Write-ColorOutput "Installing Moralerspace HWJPDOC font..." "Green"
     
@@ -222,6 +248,12 @@ function Install-PowerShellProfile {
         Write-ColorOutput "Warning: Font installation failed, but continuing..." "Yellow"
     }
     
+    # Install WezTerm config
+    Write-ColorOutput "" "White"
+    if (!(Install-WeztermConfig)) {
+        Write-ColorOutput "Warning: WezTerm config installation failed, but continuing..." "Yellow"
+    }
+    
     # Copy profile from WSL
     try {
         Write-ColorOutput "" "White"
@@ -235,11 +267,15 @@ function Install-PowerShellProfile {
         Write-ColorOutput "" "White"
         Write-ColorOutput "Next steps:" "Yellow"
         Write-ColorOutput "1. Restart Windows Terminal (font needs refresh)" "Cyan"
-        Write-ColorOutput "2. Set font in Windows Terminal:" "Cyan"
+        Write-ColorOutput "2. Switch to WezTerm for the ultimate terminal experience! 🚀" "Magenta"
+        Write-ColorOutput "   - Semi-transparent background (85% opacity)" "Gray"
+        Write-ColorOutput "   - Catppuccin Mocha theme (cool dark theme)" "Gray"
+        Write-ColorOutput "   - WSL Arch Linux as default" "Gray"
+        Write-ColorOutput "3. Or set font in Windows Terminal:" "Cyan"
         Write-ColorOutput "   Ctrl+, -> Profiles -> PowerShell -> Appearance -> Font face:" "Gray"
         Write-ColorOutput "   'Moralerspace Neon HWJPDOC'" "White"
-        Write-ColorOutput "3. Reload profile: reload or restart PowerShell" "Cyan"
-        Write-ColorOutput "4. Your theme is set to: powerlevel10k_rainbow" "Magenta"
+        Write-ColorOutput "4. Reload profile: reload or restart PowerShell" "Cyan"
+        Write-ColorOutput "5. Your theme is set to: powerlevel10k_rainbow" "Magenta"
         Write-ColorOutput "" "White"
         Write-ColorOutput "To reload the profile, run: reload" "Yellow"
         return $true
@@ -287,14 +323,15 @@ function Show-Help {
     Write-ColorOutput "PowerShell Profile Installer" "Cyan"
     Write-ColorOutput "=============================" "Cyan"
     Write-ColorOutput "" "White"
-    Write-ColorOutput "Usage: .\install-powershell.ps1 [install|uninstall|test|check|font|help]" "White"
+    Write-ColorOutput "Usage: .\install-powershell.ps1 [install|uninstall|test|check|font|wezterm|help]" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Commands:" "Yellow"
-    Write-ColorOutput "  install   - Install PowerShell profile + modules + Moralerspace font" "White"
+    Write-ColorOutput "  install   - Install PowerShell profile + modules + Moralerspace font + WezTerm config" "White"
     Write-ColorOutput "  uninstall - Remove PowerShell profile" "White"
     Write-ColorOutput "  test      - Test PowerShell profile syntax" "White"
     Write-ColorOutput "  check     - Check PowerShell installation" "White"
     Write-ColorOutput "  font      - Install Moralerspace HWJPDOC font only" "White"
+    Write-ColorOutput "  wezterm   - Install WezTerm config only" "White"
     Write-ColorOutput "  help      - Show this help message" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Prerequisites (manual installation):" "Yellow"
@@ -305,6 +342,7 @@ function Show-Help {
     Write-ColorOutput "  • Terminal-Icons       - Colorful file/folder icons" "White"
     Write-ColorOutput "  • posh-git             - Enhanced Git integration" "White"
     Write-ColorOutput "  • Moralerspace HWJPDOC - Japanese programming font" "White"
+    Write-ColorOutput "  • WezTerm config       - Cool terminal emulator config with transparency" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Recommended font setting:" "Yellow"
     Write-ColorOutput "  'Moralerspace Argon HWJPDOC', 'Consolas', monospace" "Cyan"
@@ -330,6 +368,9 @@ switch ($Action.ToLower()) {
     }
     "font" {
         Install-MoralerspaceFont
+    }
+    "wezterm" {
+        Install-WeztermConfig
     }
     "help" {
         Show-Help

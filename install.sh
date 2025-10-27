@@ -48,6 +48,14 @@ install_powerlevel10k() {
     echo -e "${YELLOW}Run 'p10k configure' to configure Powerlevel10k after restarting your shell${NC}"
 }
 
+install_wsl2_ssh_agent() {
+    echo -e "${GREEN}Installing WSL2 SSH Agent...${NC}"
+    curl -L -O https://github.com/mame/wsl2-ssh-agent/releases/latest/download/wsl2-ssh-agent
+    chmod 755 wsl2-ssh-agent
+    mv wsl2-ssh-agent $HOME_DIR/.local/bin/wsl2-ssh-agent
+    echo -e "${GREEN}WSL2 SSH Agent installation completed!${NC}"
+}
+
 # Function to install dotfiles
 install_dotfiles() {
     echo -e "${GREEN}Installing dotfiles...${NC}"
@@ -59,7 +67,21 @@ install_dotfiles() {
         echo -e "${YELLOW}Oh My Zsh not found. Skipping Powerlevel10k installation.${NC}"
         echo -e "${YELLOW}Install Oh My Zsh first: https://ohmyz.sh/${NC}"
     fi
-    
+
+    # Create local bin directory
+    if [ -d "$HOME_DIR/.local/bin" ]; then
+        echo -e "${YELLOW}Local bin directory already exists. Skipping...${NC}"
+    else
+        mkdir -p "$HOME_DIR/.local/bin"  
+    fi
+
+    # Install WSL2 SSH Agent
+    if [ -d "$HOME_DIR/.local/bin/wsl2-ssh-agent" ]; then
+        echo -e "${GREEN}WSL2 SSH Agent already installed. Skipping...${NC}"
+    else
+        install_wsl2_ssh_agent
+    fi
+
     echo ""
     echo -e "${GREEN}Installing dotfile symlinks...${NC}"
     

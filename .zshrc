@@ -1,3 +1,6 @@
+# スクリーンフェッチを表示
+screenfetch
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -117,3 +120,11 @@ export PATH="$PATH:$HOME/.local/bin"
 
 # タイムゾーンを日本時間に設定
 export TZ="Asia/Tokyo"
+
+# WSLでGPUビデオアクセラレーションレンダリングを有効にする
+# https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL#Set_default_user
+export GALLIUM_DRIVER=d3d12
+export LIBVA_DRIVER_NAME=d3d12
+
+# WSLでSSHエージェントを有効にする
+eval "$($HOME/.local/bin/wsl2-ssh-agent)"
