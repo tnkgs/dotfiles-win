@@ -193,8 +193,19 @@
   # OS identifier color.
   typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=232
   typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=7
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='⭐'
+  # Custom icon - ディストリビューション別にアイコンを表示
+  typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='${:-$(
+    if [[ -f /etc/os-release ]]; then
+      source /etc/os-release
+      case "$ID" in
+        arch) echo "\uF303" ;;      # Arch Linux アイコン
+        ubuntu) echo "\uF31B" ;;    # Ubuntu アイコン
+        *) echo "\uF17C" ;;         # デフォルトの Linux アイコン
+      esac
+    else
+      echo "\uF17C"
+    fi
+  )}'
 
   ################################[ prompt_char: prompt symbol ]################################
   # Transparent background.

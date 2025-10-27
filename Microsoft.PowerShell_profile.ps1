@@ -55,16 +55,6 @@ Set-Alias -Name ll -Value Get-ChildItem
 Set-Alias -Name grep -Value Select-String
 Set-Alias -Name which -Value Get-Command
 
-# WSL integration
-function wsl {
-    param([string]$Command = "")
-    if ($Command) {
-        wsl.exe $Command
-    } else {
-        wsl.exe
-    }
-}
-
 # Git shortcuts
 # Note: posh-git provides enhanced Git info in prompt
 function gst { git status }

@@ -1,0 +1,7 @@
+[user]
+	name = tnkgs
+	email = kento@studio-cleaf.com
+[core]
+	editor = vim
+[init]
+	defaultBranch = main
