@@ -18,12 +18,6 @@ Windows用の最高にクールなターミナルエミュレータ設定。
 ```powershell
 # WezTermのインストール
 winget install wez.wezterm
-
-# Moralerspaceフォントのインストール（自動）
-.\install-powershell.ps1 font
-
-# WSL Arch Linuxのセットアップ（必要な場合）
-wsl --install -d Arch
 ```
 
 ### 設定ファイルのインストール

@@ -32,6 +32,40 @@ create_symlink() {
     ln -s "$source" "$target"
 }
 
+# Function to recursively install config directory
+install_config_recursive() {
+    local source_base="$1"
+    local target_base="$2"
+    local relative_path="$3"
+    
+    local source_dir="$source_base/$relative_path"
+    local target_dir="$target_base/$relative_path"
+    
+    # Create target directory if it doesn't exist
+    mkdir -p "$target_dir"
+    
+    # Process all items in the source directory
+    for item in "$source_dir"/*; do
+        [ -e "$item" ] || continue  # Skip if glob doesn't match anything
+        
+        local item_name=$(basename "$item")
+        local new_relative_path="$relative_path/$item_name"
+        # Remove leading slash if present
+        new_relative_path="${new_relative_path#/}"
+        
+        local source_item="$source_base/$new_relative_path"
+        local target_item="$target_base/$new_relative_path"
+        
+        if [ -d "$item" ]; then
+            # For directories, create symlink to the entire directory
+            create_symlink "$source_item" "$target_item" ".config/$new_relative_path"
+        elif [ -f "$item" ]; then
+            # For files, create symlink
+            create_symlink "$source_item" "$target_item" ".config/$new_relative_path"
+        fi
+    done
+}
+
 # Function to install Powerlevel10k
 install_powerlevel10k() {
     local P10K_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
@@ -54,6 +88,37 @@ install_wsl2_ssh_agent() {
     chmod 755 wsl2-ssh-agent
     mv wsl2-ssh-agent $HOME_DIR/.local/bin/wsl2-ssh-agent
     echo -e "${GREEN}WSL2 SSH Agent installation completed!${NC}"
+}
+
+# Function to install paru (AUR helper for Arch Linux)
+install_paru() {
+    # Check if running on Arch Linux
+    if [ ! -f /etc/arch-release ]; then
+        echo -e "${YELLOW}Not running on Arch Linux. Skipping paru installation.${NC}"
+        return
+    fi
+    
+    if command -v paru &> /dev/null; then
+        echo -e "${YELLOW}paru is already installed. Skipping...${NC}"
+        return
+    fi
+    
+    echo -e "${GREEN}Installing paru (AUR helper)...${NC}"
+    
+    # Install dependencies
+    sudo pacman -S --needed --noconfirm git base-devel
+    
+    # Clone and install paru
+    local TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
+    git clone https://aur.archlinux.org/paru.git
+    cd paru
+    makepkg -si --noconfirm
+    cd "$HOME"
+    rm -rf "$TEMP_DIR"
+    
+    echo -e "${GREEN}paru installation completed!${NC}"
+    echo -e "${YELLOW}Note: You can use 'yay' as an alias for 'paru' (configured in .zshrc)${NC}"
 }
 
 # Function to install dotfiles
@@ -81,6 +146,9 @@ install_dotfiles() {
     else
         install_wsl2_ssh_agent
     fi
+
+    # Install paru (AUR helper) if on Arch Linux
+    install_paru
 
     echo ""
     echo -e "${GREEN}Installing dotfile symlinks...${NC}"
@@ -111,14 +179,11 @@ install_dotfiles() {
     # Create directories for config files
     mkdir -p "$HOME_DIR/.config"
     
-    # Install config files
+    # Install config files recursively
     if [ -d "$DOTFILES_DIR/.config" ]; then
-        for config_file in "$DOTFILES_DIR/.config"/*; do
-            if [ -f "$config_file" ] || [ -d "$config_file" ]; then
-                config_name=$(basename "$config_file")
-                create_symlink "$config_file" "$HOME_DIR/.config/$config_name" ".config/$config_name"
-            fi
-        done
+        echo ""
+        echo -e "${GREEN}Installing .config files...${NC}"
+        install_config_recursive "$DOTFILES_DIR/.config" "$HOME_DIR/.config" ""
     fi
     
     echo -e "${GREEN}Dotfiles installation completed!${NC}"

@@ -121,10 +121,26 @@ export PATH="$PATH:$HOME/.local/bin"
 # タイムゾーンを日本時間に設定
 export TZ="Asia/Tokyo"
 
-# WSLでGPUビデオアクセラレーションレンダリングを有効にする
-# https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL#Set_default_user
-export GALLIUM_DRIVER=d3d12
-export LIBVA_DRIVER_NAME=d3d12
-
 # WSLでSSHエージェントを有効にする
 eval "$($HOME/.local/bin/wsl2-ssh-agent)"
+
+# Arch Linuxの場合のみ設定
+# Ubuntuからの完全移行後はこの条件は不要
+if [ -f /etc/arch-release ]; then
+  # WSLでGPUビデオアクセラレーションレンダリングを有効にする
+  # https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL#Set_default_user
+  export GALLIUM_DRIVER=d3d12
+  export LIBVA_DRIVER_NAME=d3d12
+
+  # paruのエイリアスをyayに設定
+  if command -v paru &> /dev/null; then
+      alias yay='paru'
+  fi
+
+  # khalの補完を有効にする
+  eval "$(_KHAL_COMPLETE=zsh_source khal)"
+
+  # viのエイリアスをnvimに設定
+  alias vi='nvim'
+  alias vim='nvim'
+fi
