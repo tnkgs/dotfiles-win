@@ -1,7 +1,7 @@
 -- WezTerm Configuration
 -- 最高にクールなターミナル設定 🚀
 
-local wezterm = require('wezterm')
+local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 -- ============================================================================
@@ -63,16 +63,17 @@ config.cursor_thickness = '2px'
 -- タブバー設定 (Tab Bar)
 -- ============================================================================
 
-config.use_fancy_tab_bar = true
-config.tab_bar_at_bottom = false
-config.hide_tab_bar_if_only_one_tab = false
+config.use_fancy_tab_bar = false
+config.tab_bar_at_bottom = true
+config.hide_tab_bar_if_only_one_tab = true
 config.show_tab_index_in_tab_bar = true
+config.show_new_tab_button_in_tab_bar = false
 config.tab_max_width = 32
 
 -- タブバーの色設定
 config.colors = {
   tab_bar = {
-    background = '#1a1a1a',
+    background = 'none',
     active_tab = {
       bg_color = '#89b4fa', -- Catppuccinのブルー
       fg_color = '#1e1e2e',

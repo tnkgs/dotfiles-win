@@ -106,6 +106,42 @@ function Install-WeztermConfig {
     }
 }
 
+function Install-WslgConfig {
+    Write-ColorOutput "Installing WSLg configuration..." "Green"
+    
+    $wslgSourcePath = "C:\Users\kento\dotfiles\.wslgconfig"
+    $wslgDestPath = "C:\Users\kento\.wslgconfig"
+    
+    try {
+        # Check if source file exists
+        if (!(Test-Path $wslgSourcePath)) {
+            Write-ColorOutput "WSLg config not found: $wslgSourcePath" "Yellow"
+            Write-ColorOutput "Skipping WSLg config installation" "Yellow"
+            return $false
+        }
+        
+        # Backup existing config
+        if (Test-Path $wslgDestPath) {
+            Write-ColorOutput "Backing up existing WSLg config: $wslgDestPath -> $wslgDestPath.backup" "Yellow"
+            Copy-Item $wslgDestPath "$wslgDestPath.backup" -Force
+        }
+        
+        # Copy WSLg config
+        Write-ColorOutput "Copying WSLg config to home directory..." "Blue"
+        Copy-Item $wslgSourcePath $wslgDestPath -Force
+        Write-ColorOutput "WSLg config installed successfully!" "Green"
+        Write-ColorOutput "Config location: $wslgDestPath" "Blue"
+        Write-ColorOutput "" "White"
+        Write-ColorOutput "NOTE: Restart WSL to apply WSLg changes:" "Yellow"
+        Write-ColorOutput "  wsl --shutdown" "Cyan"
+        
+        return $true
+    } catch {
+        Write-ColorOutput "Failed to install WSLg config: $($_.Exception.Message)" "Red"
+        return $false
+    }
+}
+
 function Install-MoralerspaceFont {
     Write-ColorOutput "Installing Moralerspace HWJPDOC font..." "Green"
     
@@ -254,6 +290,12 @@ function Install-PowerShellProfile {
         Write-ColorOutput "Warning: WezTerm config installation failed, but continuing..." "Yellow"
     }
     
+    # Install WSLg config
+    Write-ColorOutput "" "White"
+    if (!(Install-WslgConfig)) {
+        Write-ColorOutput "Warning: WSLg config installation failed, but continuing..." "Yellow"
+    }
+    
     # Copy profile from WSL
     try {
         Write-ColorOutput "" "White"
@@ -274,8 +316,10 @@ function Install-PowerShellProfile {
         Write-ColorOutput "3. Or set font in Windows Terminal:" "Cyan"
         Write-ColorOutput "   Ctrl+, -> Profiles -> PowerShell -> Appearance -> Font face:" "Gray"
         Write-ColorOutput "   'Moralerspace Neon HWJPDOC'" "White"
-        Write-ColorOutput "4. Reload profile: reload or restart PowerShell" "Cyan"
-        Write-ColorOutput "5. Your theme is set to: powerlevel10k_rainbow" "Magenta"
+        Write-ColorOutput "4. WSLg config installed - Restart WSL for GUI app optimization:" "Cyan"
+        Write-ColorOutput "   wsl --shutdown" "Gray"
+        Write-ColorOutput "5. Reload profile: reload or restart PowerShell" "Cyan"
+        Write-ColorOutput "6. Your theme is set to: powerlevel10k_rainbow" "Magenta"
         Write-ColorOutput "" "White"
         Write-ColorOutput "To reload the profile, run: reload" "Yellow"
         return $true
@@ -323,15 +367,16 @@ function Show-Help {
     Write-ColorOutput "PowerShell Profile Installer" "Cyan"
     Write-ColorOutput "=============================" "Cyan"
     Write-ColorOutput "" "White"
-    Write-ColorOutput "Usage: .\install-powershell.ps1 [install|uninstall|test|check|font|wezterm|help]" "White"
+    Write-ColorOutput "Usage: .\install-powershell.ps1 [install|uninstall|test|check|font|wezterm|wslg|help]" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Commands:" "Yellow"
-    Write-ColorOutput "  install   - Install PowerShell profile + modules + Moralerspace font + WezTerm config" "White"
+    Write-ColorOutput "  install   - Install PowerShell profile + modules + Moralerspace font + WezTerm + WSLg config" "White"
     Write-ColorOutput "  uninstall - Remove PowerShell profile" "White"
     Write-ColorOutput "  test      - Test PowerShell profile syntax" "White"
     Write-ColorOutput "  check     - Check PowerShell installation" "White"
     Write-ColorOutput "  font      - Install Moralerspace HWJPDOC font only" "White"
     Write-ColorOutput "  wezterm   - Install WezTerm config only" "White"
+    Write-ColorOutput "  wslg      - Install WSLg config only" "White"
     Write-ColorOutput "  help      - Show this help message" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Prerequisites (manual installation):" "Yellow"
@@ -343,11 +388,15 @@ function Show-Help {
     Write-ColorOutput "  • posh-git             - Enhanced Git integration" "White"
     Write-ColorOutput "  • Moralerspace HWJPDOC - Japanese programming font" "White"
     Write-ColorOutput "  • WezTerm config       - Cool terminal emulator config with transparency" "White"
+    Write-ColorOutput "  • WSLg config          - WSL GUI optimization for Ghostty/GTK apps" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Recommended font setting:" "Yellow"
     Write-ColorOutput "  'Moralerspace Argon HWJPDOC', 'Consolas', monospace" "Cyan"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Note: The bin directory is used for custom tools and scripts" "Gray"
+    Write-ColorOutput "" "White"
+    Write-ColorOutput "WSLg config requires WSL restart:" "Gray"
+    Write-ColorOutput "  wsl --shutdown" "DarkGray"
 }
 
 # Main script logic
@@ -371,6 +420,9 @@ switch ($Action.ToLower()) {
     }
     "wezterm" {
         Install-WeztermConfig
+    }
+    "wslg" {
+        Install-WslgConfig
     }
     "help" {
         Show-Help

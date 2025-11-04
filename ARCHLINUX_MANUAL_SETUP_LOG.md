@@ -3,11 +3,13 @@
 ## weztermの導入
 
 ```powershell
-winget install wez.wezterm
+winget install --id wez.wezterm
 ```
 [WezTerm セットアップガイド](WEZTERM_SETUP.md)
 
 ## archlinuxの初期化
+
+[Install Arch Linux on WSL](https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL)
 
 ```sh
 pacman-key --init
@@ -39,9 +41,37 @@ sudo vim /etc/pam.d/system-login
 session optional pam_systemd.so
 ```
 
+systemdでX11ソケットのシンボリックリンクを作成する設定を追加します。
+```sh
+sudo vim /etc/tmpfiles.d/wslg.conf
+```
+
+以下を追加
+```
+#      Path         Mode UID  GID  Age Argument
+L+     %T/.X11-unix -    -    -    -   /mnt/wslg/.X11-unix
+```
+
 waylandのruntime-dirを設定
 ```sh
-ln -sf /mnt/wslg/runtime-dir/wayland-0* /run/user/${USER_ID}/
+sudo vim /etc/profile.d/wslg.sh
+```
+
+以下を追加
+```sh
+export GALLIUM_DRIVER=d3d12
+for i in "/mnt/wslg/runtime-dir/"*; do
+  [ "$XDG_RUNTIME_DIR" = "$HOME" ] && XDG_RUNTIME_DIR="/var/run/user/$UID"
+  if [ ! -L "$XDG_RUNTIME_DIR/$(basename "$i")" ]; then
+    [ -d "$XDG_RUNTIME_DIR/$(basename "$i")" ] && rm -r "$XDG_RUNTIME_DIR/$(basename "$i")"
+    ln -s "$i" "$XDG_RUNTIME_DIR/$(basename "$i")"
+  fi
+done
+```
+
+libeditのシンボリックリンクを作成
+```sh
+ln -s /usr/lib/libedit.so /usr/lib/libedit.so.2
 ```
 
 ## 言語環境の設定
@@ -81,6 +111,8 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-
 ## pacmanで導入したパッケージ
 
 ```sh
+# pacman-contribを導入
+sudo pacman -S pacman-contrib
 # ターミナルマルチプレクサ
 sudo pacman -S tmux
 # システム情報表示
@@ -101,6 +133,10 @@ sudo pacman -S peaclock
 sudo pacman -S neovim
 # カレンダー
 sudo pacman -S khal
+# ファイル圧縮・解凍
+sudo pacman -S p7zip
+# ターミナルエミュレータ
+sudo pacman -S ghostty
 ```
 
 ## paruの導入
@@ -202,4 +238,17 @@ dateformat= %m-%d
 longdateformat= %Y-%m-%d
 datetimeformat= %m-%d %H:%M
 longdatetimeformat= %Y-%m-%d %H:%M
+```
+
+## lazy nvimの導入
+
+依存パッケージの導入
+```sh
+sudo pacman -S lua lua51 luarocks luajit tree-sitter tree-sitter-cli nodejs npm ripgrep fd lazygit fzf python-pynvim imagemagick ghostscript tectonic
+sudo npm install -g neovim
+sudo npm install -g @mermaid-js/mermaid-cli
+```
+
+```
+:TSInstall css latex norg scss svelte typst vue
 ```

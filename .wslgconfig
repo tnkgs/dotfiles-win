@@ -1,0 +1,26 @@
+# WSLg Configuration
+# Place this file in: C:\Users\kento\.wslgconfig
+# After changes, restart WSL: wsl --shutdown
+
+[system-distro-env]
+# GTK設定 - ウィンドウ装飾とアニメーションの最適化
+GTK_CSD=0
+GTK_USE_PORTAL=0
+GDK_BACKEND=x11
+GDK_SCALE=1
+
+# X11設定 - DRI3を無効化（互換性向上）
+LIBGL_ALWAYS_SOFTWARE=0
+MESA_LOADER_DRIVER_OVERRIDE=d3d12
+
+# WSLgウィンドウマネージャー設定
+WESTON_DISABLE_HW_CURSOR=1
+
+[wsl2]
+# WSLg GUI関連の設定
+guiApplications=true
+
+# X11の設定
+[xwayland]
+# ウィンドウマネージャーの動作を改善
+

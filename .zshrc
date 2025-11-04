@@ -131,6 +131,18 @@ if [ -f /etc/arch-release ]; then
   # https://wiki.archlinux.org/title/Install_Arch_Linux_on_WSL#Set_default_user
   export GALLIUM_DRIVER=d3d12
   export LIBVA_DRIVER_NAME=d3d12
+  export MESA_LOADER_DRIVER_OVERRIDE=d3d12
+  export MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA
+  # GTK設定
+  export GDK_BACKEND=x11  # Waylandではなく明示的にX11を使用
+  export GDK_GL=gles  # OpenGL ESを使用（Ghosttyログから推奨）
+
+  # GTK4固有の設定
+  export GTK_CSD=0  # クライアントサイド装飾を無効化
+  export GTK_USE_PORTAL=0  # ポータル経由のダイアログを無効化
+  
+  # ウィンドウマネージャーヒント
+  export _JAVA_AWT_WM_NONREPARENTING=1
 
   # paruのエイリアスをyayに設定
   if command -v paru &> /dev/null; then
@@ -144,3 +156,5 @@ if [ -f /etc/arch-release ]; then
   alias vi='nvim'
   alias vim='nvim'
 fi
+
+export LANG=ja_JP.UTF-8
