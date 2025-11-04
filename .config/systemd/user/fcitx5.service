@@ -1,0 +1,20 @@
+[Unit]
+Description=Fcitx5 Input Method Framework
+Documentation=man:fcitx5(1)
+
+[Service]
+Type=simple
+# GUI環境（DISPLAYが設定されている）でのみ起動
+ExecStart=/usr/bin/fcitx5 --disable wayland --enable xim
+Restart=on-failure
+RestartSec=3
+
+# 環境変数をサービス内で設定（systemdは親の環境を継承しない）
+Environment="GTK_IM_MODULE=fcitx"
+Environment="QT_IM_MODULE=fcitx"
+Environment="XMODIFIERS=@im=fcitx"
+Environment="GDK_BACKEND=x11"
+Environment="QT_QPA_PLATFORM=xcb"
+
+[Install]
+WantedBy=default.target
