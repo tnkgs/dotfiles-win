@@ -102,7 +102,7 @@ LANG=en_US.UTF-8
 
 ```sh
 sudo pacman -S zsh
-sudo sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 # 以下はinstall.shで対応済みなので不要
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
@@ -137,6 +137,9 @@ sudo pacman -S khal
 sudo pacman -S p7zip
 # ターミナルエミュレータ
 sudo pacman -S ghostty
+# Markdown viewer
+sudo pacman -S glow
+sudo pacman -S mdcat
 ```
 
 ## paruの導入
@@ -156,12 +159,44 @@ alias yay='paru'
 ## paruで導入したパッケージ
 
 ```sh
+# tmuxプラグインマネージャー
+yay -S tmux-plugin-manager
+# vdirsyncer
 yay -S vdirsyncer
 # vdirsyncerでgoogle calendarを使うために必要
 yay -S python-aiohttp-oauthlib
 # WSLg動作確認用
 yay -S xorg-xeyes
 ```
+
+## tmuxの設定
+
+### tmux-plugin-manager（TPM）のセットアップ
+
+AURからインストールした場合、TPMは`/usr/share/tmux-plugin-manager`にインストールされます。
+
+```sh
+# プラグインディレクトリを作成
+mkdir -p ~/.tmux/plugins
+
+# TPMへのシンボリックリンクを作成
+ln -s /usr/share/tmux-plugin-manager ~/.tmux/plugins/tpm
+```
+
+### tmux-resurrectの導入
+
+`.tmux.conf`にプラグイン設定を追加後、以下を実行：
+
+```sh
+# tmux内でプレフィックスキー（Ctrl+g）を押してから Shift+i を押す
+# または、tmuxを再起動
+tmux kill-server
+tmux
+```
+
+プラグインのインストール：
+- **セッション保存**: `Ctrl+g` → `Ctrl+s`
+- **セッション復元**: `Ctrl+g` → `Ctrl+r`
 
 ## wsl2-ssh-agentの導入
 

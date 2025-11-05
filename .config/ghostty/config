@@ -70,12 +70,66 @@ window-title-font-family = Moralerspace Neon HWJPDOC
 # ============================================================================
 # 見た目
 # ============================================================================
-# 背景の透明度
-background-opacity = 0.8
+# 背景の透明度（85-90%で liquid glass 効果）
+background-opacity = 0.85
 
-# テーマ（内蔵テーマリストから選択）
-# 利用可能: github-dark, github-light, nord, gruvbox-dark, gruvbox-light など
-# theme = 
+# 背景色（Catppuccin Mocha base色で深みのある背景）
+background = #1e1e2e
+
+# 前景色（テキスト色）- Catppuccin Mocha text色
+foreground = #cdd6f4
+
+# カーソル色設定（明るい青でコントラストを確保）
+cursor-color = #89b4fa
+cursor-text = #1e1e2e
+
+# ブラー効果（注意: WSLg/Windows環境では動作しない可能性が高い）
+# background-blur-radius機能はcompositorが必要なため、Linux Wayland環境でのみ動作
+# WSLg環境では代わりに透明度で視覚効果を実現
+# background-blur-radius = 20
+
+# ウィンドウパディング（グラスモルフィズム風の余白）
+window-padding-x = 4
+window-padding-y = 4
+
+# カーソルスタイル
+cursor-style = block
+cursor-style-blink = true
+
+# ============================================================================
+# Catppuccin Mocha カラーパレット（コントラスト強化版）
+# ============================================================================
+# Black
+palette = 0=#45475a
+palette = 8=#585b70
+
+# Red
+palette = 1=#f38ba8
+palette = 9=#f38ba8
+
+# Green
+palette = 2=#a6e3a1
+palette = 10=#a6e3a1
+
+# Yellow
+palette = 3=#f9e2af
+palette = 11=#f9e2af
+
+# Blue
+palette = 4=#89b4fa
+palette = 12=#89b4fa
+
+# Magenta
+palette = 5=#f5c2e7
+palette = 13=#f5c2e7
+
+# Cyan
+palette = 6=#94e2d5
+palette = 14=#94e2d5
+
+# White
+palette = 7=#bac2de
+palette = 15=#cdd6f4 
 
 # ============================================================================
 # パフォーマンス
