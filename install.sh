@@ -156,6 +156,7 @@ install_dotfiles() {
     # List of files to symlink (relative to dotfiles directory)
     files=(
         ".zshrc"
+        ".zshenv"
         ".bashrc"
         ".gitconfig"
         ".vimrc"
