@@ -287,3 +287,14 @@ sudo npm install -g @mermaid-js/mermaid-cli
 ```
 :TSInstall css latex norg scss svelte typst vue
 ```
+
+neorgのtreesitterのパーサーインストールエラー回避策
+```sh
+cd ~/.cache/nvim/tree-sitter-norg
+cc -c -o parser.o src/parser.c -Isrc -shared -Os -std=c11
+c++ -c -o scanner.o src/scanner.cc -Isrc -shared -Os -std=c++17
+c++ -o parser.so parser.o scanner.o -lc -shared -Os
+cp parser.so ~/.local/share/nvim/site/parser/norg.so
+cd ~
+rm -rf ~/.cache/nvim/tree-sitter-norg
+```

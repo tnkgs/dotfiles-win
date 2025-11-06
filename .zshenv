@@ -18,7 +18,6 @@ if [ -f /etc/arch-release ]; then
   if [ -n "$DISPLAY" ]; then
     # Wayland環境変数設定
     export QT_QPA_PLATFORM=xcb
-    export WAYLAND_DISPLAY=""
 
     # IME環境変数設定
     export GTK_IM_MODULE=fcitx
