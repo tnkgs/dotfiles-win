@@ -27,7 +27,7 @@ config.font_size = 11.0
 config.line_height = 1.2
 
 -- ウィンドウ設定
-config.window_decorations = "RESIZE" -- タイトルバーを統合してクールに
+config.window_decorations = "TITLE | RESIZE" -- タイトルバーを統合してクールに
 config.window_padding = {
 	left = 8,
 	right = 8,

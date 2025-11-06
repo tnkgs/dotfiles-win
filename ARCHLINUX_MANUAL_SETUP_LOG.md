@@ -193,6 +193,10 @@ yay -S xorg-xeyes
 yay -S wsl2-ssh-agent
 # Widnows HelloによるPAM認証 
 yay -S wsl-hello-sudo-bin
+# version manager
+yay -S proto
+# cursor cli
+yay -S cursor-cli
 ```
 
 ### wsl-hello-sudo-binのセットアップ
@@ -203,6 +207,16 @@ cd /opt/wsl-hello-sudo/
 ```
 
 権限の関係でうまく行かないけど何とかする
+
+`/etc/pam.d/sudo`を編集
+
+```text
+#%PAM-1.0
+auth            sufficient      pam_wsl_hello.so
+auth            include         system-auth
+account         include         system-auth
+session         include         system-auth
+```
 
 ## tmuxの設定
 

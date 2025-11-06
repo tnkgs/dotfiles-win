@@ -148,6 +148,7 @@ install_dotfiles() {
     ".tmux.conf"
     ".gitignore_global"
     ".p10k.zsh"
+    ".proto/.prototools"
     "Microsoft.PowerShell_profile.ps1"
   )
 
@@ -156,6 +157,8 @@ install_dotfiles() {
     target_file="$HOME_DIR/$file"
 
     if [ -f "$source_file" ]; then
+      create_symlink "$source_file" "$target_file" "$file"
+    elif [ -d "$source_file" ]; then
       create_symlink "$source_file" "$target_file" "$file"
     else
       echo -e "${YELLOW}File not found: $file (skipping)${NC}"
@@ -222,4 +225,3 @@ case "${1:-install}" in
   exit 1
   ;;
 esac
-
