@@ -122,7 +122,7 @@ export PATH="$PATH:$HOME/.local/bin"
 export TZ="Asia/Tokyo"
 
 # WSLでSSHエージェントを有効にする
-eval "$($HOME/.local/bin/wsl2-ssh-agent)"
+eval "$(/usr/sbin/wsl2-ssh-agent)"
 
 # Arch Linuxの場合のみ設定
 # Ubuntuからの完全移行後はこの条件は不要

@@ -70,8 +70,8 @@ window-title-font-family = Moralerspace Neon HWJPDOC
 # ============================================================================
 # 見た目
 # ============================================================================
-# 背景の透明度（85-90%で liquid glass 効果）
-background-opacity = 0.85
+# 背景の透明度（70-90%で liquid glass 効果）
+background-opacity = 0.75
 
 # 背景色（Catppuccin Mocha base色で深みのある背景）
 background = #1e1e2e

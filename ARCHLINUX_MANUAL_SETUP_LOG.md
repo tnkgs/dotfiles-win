@@ -5,6 +5,7 @@
 ```powershell
 winget install --id wez.wezterm
 ```
+
 [WezTerm セットアップガイド](WEZTERM_SETUP.md)
 
 ## archlinuxの初期化
@@ -21,43 +22,54 @@ passwd kento
 passwd
 echo '%wheel ALL=(ALL) ALL' > /etc/sudoers.d/wheel
 ```
+
 default userを設定
+
 ```sh
 sudo vim /etc/wsl.conf
 ```
+
 以下を追加
+
 ```toml
 [user]
 default = kento
 ```
 
 system-loginの設定
+
 ```sh
 sudo vim /etc/pam.d/system-login
 ```
+
 以下を編集
+
 ```text
 # - session optional pam_systemd.so から以下に変更
 session optional pam_systemd.so
 ```
 
 systemdでX11ソケットのシンボリックリンクを作成する設定を追加します。
+
 ```sh
 sudo vim /etc/tmpfiles.d/wslg.conf
 ```
 
 以下を追加
+
 ```
 #      Path         Mode UID  GID  Age Argument
 L+     %T/.X11-unix -    -    -    -   /mnt/wslg/.X11-unix
 ```
 
 waylandのruntime-dirを設定
+
 ```sh
 sudo vim /etc/profile.d/wslg.sh
 ```
 
 以下を追加
+
 ```sh
 export GALLIUM_DRIVER=d3d12
 for i in "/mnt/wslg/runtime-dir/"*; do
@@ -70,6 +82,7 @@ done
 ```
 
 libeditのシンボリックリンクを作成
+
 ```sh
 ln -s /usr/lib/libedit.so /usr/lib/libedit.so.2
 ```
@@ -81,19 +94,26 @@ sudo vim /etc/locale.gen
 ```
 
 以下、コメントアウトを解除
+
 ```text
 ja_JP.UTF-8 UTF-8
 en_US.UTF-8 UTF-8
 ```
+
 ロケールを生成
+
 ```sh
 locale-gen
 ```
+
 ロケールを設定
+
 ```sh
 sudo vim /etc/locale.conf
 ```
+
 以下を設定
+
 ```text
 LANG=en_US.UTF-8
 ```
@@ -149,9 +169,11 @@ git clone https://aur.archlinux.org/paru.git
 cd paru
 makepkg -si
 ```
+
 ※ `install.sh` で対応済みなので不要
 
 yayのAliasを設定 `~/.zshrc` に追加
+
 ```sh
 alias yay='paru'
 ```
@@ -167,7 +189,20 @@ yay -S vdirsyncer
 yay -S python-aiohttp-oauthlib
 # WSLg動作確認用
 yay -S xorg-xeyes
+# Windowsからssh-agentサービスをブリッジする
+yay -S wsl2-ssh-agent
+# Widnows HelloによるPAM認証 
+yay -S wsl-hello-sudo-bin
 ```
+
+### wsl-hello-sudo-binのセットアップ
+
+```sh
+cd /opt/wsl-hello-sudo/
+./install.sh
+```
+
+権限の関係でうまく行かないけど何とかする
 
 ## tmuxの設定
 
@@ -195,19 +230,9 @@ tmux
 ```
 
 プラグインのインストール：
-- **セッション保存**: `Ctrl+g` → `Ctrl+s`
-- **セッション復元**: `Ctrl+g` → `Ctrl+r`
 
-## wsl2-ssh-agentの導入
-
-```sh
-curl -L -O https://github.com/mame/wsl2-ssh-agent/releases/latest/download/wsl2-ssh-agent
-chmod 755 wsl2-ssh-agent
-mkdir -p ~/.local/bin
-mv wsl2-ssh-agent ~/.local/bin
-```
-
-※ `install.sh` で対応済みなので不要
+- __セッション保存__: `Ctrl+g` → `Ctrl+s`
+- __セッション復元__: `Ctrl+g` → `Ctrl+r`
 
 ## vdirsyncerの設定
 
@@ -219,7 +244,9 @@ mkdir -p ~/.local/state/vdirsyncer
 mkdir -p ~/.calendars/gcal/
 touch ~/.config/vdirsyncer/config
 ```
+
 以下のように設定ファイルを作成
+
 ```toml
 [general]
 status_path = "~/.vdirsyncer/status/"
@@ -243,6 +270,7 @@ client_secret = "GOOGLE_CLIENT_SECRET"
 ```
 
 設定の反映と同期
+
 ```sh
 vdirsyncer discover
 vdirsyncer sync
@@ -256,7 +284,9 @@ systemctl --user enable vdirsyncer.timer
 mkdir -p ~/.config/khal
 vim ~/.config/khal/config
 ```
+
 以下のように設定ファイルを作成
+
 ```toml
 [calendars]
 [[gcal-cal]]
@@ -278,6 +308,7 @@ longdatetimeformat= %Y-%m-%d %H:%M
 ## lazy nvimの導入
 
 依存パッケージの導入
+
 ```sh
 sudo pacman -S lua lua51 luarocks luajit tree-sitter tree-sitter-cli nodejs npm ripgrep fd lazygit fzf python-pynvim imagemagick ghostscript tectonic
 sudo npm install -g neovim
@@ -289,6 +320,7 @@ sudo npm install -g @mermaid-js/mermaid-cli
 ```
 
 neorgのtreesitterのパーサーインストールエラー回避策
+
 ```sh
 cd ~/.cache/nvim/tree-sitter-norg
 cc -c -o parser.o src/parser.c -Isrc -shared -Os -std=c11
