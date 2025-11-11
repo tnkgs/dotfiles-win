@@ -149,8 +149,6 @@ sudo pacman -S lib32-vulkan-icd-loader
 sudo pacman -S wl-clipboard
 # 時計
 sudo pacman -S peaclock
-# テキストエディタ
-sudo pacman -S neovim
 # カレンダー
 sudo pacman -S khal
 # ファイル圧縮・解凍
@@ -160,6 +158,10 @@ sudo pacman -S ghostty
 # Markdown viewer
 sudo pacman -S glow
 sudo pacman -S mdcat
+# Geminiプロトコルクライアント
+sudo pacman -S gemini-cli
+# JSONパーサー
+sudo pacman -S jq
 ```
 
 ## paruの導入
@@ -197,6 +199,12 @@ yay -S wsl-hello-sudo-bin
 yay -S proto
 # cursor cli
 yay -S cursor-cli
+# neovim
+yay -S neovim-git
+# AWS CLI
+yay -S aws-cli-bin
+# devpod
+yay -S devpod-bin
 ```
 
 ### wsl-hello-sudo-binのセットアップ
