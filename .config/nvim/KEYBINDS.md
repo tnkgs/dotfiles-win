@@ -1,321 +1,244 @@
-# Neovim キーバインドチートシート
+# 開発環境キーバインド チートシート
 
-このドキュメントでは、LazyVim + カスタム設定のキーバインドを一覧します。
+LazyVim + Ghostty + tmux + fcitx5 の統合キーバインドを IDE 風の操作体系でまとめました。  
+日常的に使う操作を「入力メソッド → ターミナル → マルチプレクサ → エディタ」の順で把握できます。
 
 **凡例**
-- 🟢 カスタム設定
-- 🔵 LazyVimデフォルト
-- `<leader>` = `Space`（スペースキー）
+- `<leader>` = `Space`
+- `<LocalLeader>` = `\`
+- 🟢: このリポジトリで追加・上書きしたカスタム
+- 🔵: LazyVim / プラグイン / tmux などのデフォルト
 
 ---
 
-## 📁 基本操作
+## 0. 環境横断クイックリファレンス
 
-### 保存・終了
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<leader>fs` | 💾 ファイル保存 | 🟢 |
-| `<leader>qq` | 🚪 すべて終了 | 🔵 |
-| `<leader>qd` | 🚪 セッション保存せずに終了 | 🔵 |
-
-### ウィンドウ操作
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<C-h>` | ← 左のウィンドウへ | 🟢 |
-| `<C-j>` | ↓ 下のウィンドウへ | 🟢 |
-| `<C-k>` | ↑ 上のウィンドウへ | 🟢 |
-| `<C-l>` | → 右のウィンドウへ | 🟢 |
-| `<C-Up>` | ↑ ウィンドウ高さ増加 | 🟢 |
-| `<C-Down>` | ↓ ウィンドウ高さ減少 | 🟢 |
-| `<C-Left>` | ← ウィンドウ幅減少 | 🟢 |
-| `<C-Right>` | → ウィンドウ幅増加 | 🟢 |
-
-### バッファ操作
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<S-h>` | ← 前のバッファ | 🟢 |
-| `<S-l>` | → 次のバッファ | 🟢 |
-| `<leader>bd` | 🗑️ バッファ削除 | 🟢 |
-| `<leader>bD` | 🗑️ 他のバッファをすべて削除 | 🟢 |
-| `<leader>bb` | 📋 バッファ一覧 | 🔵 |
-| `<leader>bp` | 📌 バッファをピン留め | 🔵 |
+| 操作カテゴリ | Ghostty (端末) | tmux (セッション) | Neovim (エディタ) | 備考 |
+|--------------|----------------|-------------------|-------------------|------|
+| 新規タブ / ウィンドウ | `Ctrl+Shift+T` 🟢 | `Prefix`+`c` 🔵 | `<leader>fn` 🔵 (新規ファイル) | `Prefix` = `Ctrl+g` |
+| 画面分割 | - | `Prefix`+`|` 🟢（縦） / `Prefix`+`-` 🟢（横） | `<leader>w`系 🔵 | 画面管理は tmux が主担当 |
+| ペイン移動 | OS 既定 | `Prefix`+`h/j/k/l` 🟢 | `<C-h/j/k/l>` 🟢 | tmux と Neovim の方向キーを統一 |
+| コピペ | `Ctrl+Shift+C/V` 🟢 | マウスホイールで copy-mode 🟢 | `"+y`, `<leader>y` 🔵 | 端末 → tmux → Neovim の順に活用 |
+| ズーム / フルスクリーン | `F11` 🟢 | `Prefix`+`z` 🔵 | `<leader>uz` 🔵 | フォーカスに応じて選択 |
+| IME 切替 | `Ctrl+Space` | - | - | fcitx5 を経由して全レイヤーで共通 |
 
 ---
 
-## ✏️ 編集操作
+## 1. 入力メソッド（fcitx5）
 
-### 行移動
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `J` (visual) | ↓ 行を下に移動 | 🟢 |
-| `K` (visual) | ↑ 行を上に移動 | 🟢 |
-| `j` | ↓ 下へ（wrapped対応） | 🟢 |
-| `k` | ↑ 上へ（wrapped対応） | 🟢 |
-
-### インデント
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<` (visual) | ← インデント左 | 🟢 |
-| `>` (visual) | → インデント右 | 🟢 |
-
-### コピー・ペースト
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `p` (visual) | 📋 ペースト（レジスタ保持） | 🟢 |
-| `J` (normal) | 🔗 行連結（カーソル位置維持） | 🟢 |
-
-### 検索
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `n` | → 次の検索結果（画面中央） | 🟢 |
-| `N` | ← 前の検索結果（画面中央） | 🟢 |
-| `<Esc>` | 🔍 検索ハイライト解除 | 🟢 |
-
----
-
-## 🔍 ファイル・検索
-
-### ファイル検索
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<leader>ff` | 🔍 ファイル検索 | 🔵 |
-| `<leader>fr` | 🕐 最近開いたファイル | 🔵 |
-| `<leader>fg` | 🔎 Grep検索 | 🔵 |
-| `<leader>fb` | 📋 バッファ検索 | 🔵 |
-| `<leader>fw` | 💬 現在のワードを検索 | 🔵 |
-
-### ファイルエクスプローラー
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<leader>e` | 📁 Explorer（Snacks） | 🟢 |
-| `<leader>E` | 📂 Explorer（現在のファイルディレクトリ） | 🟢 |
-| `<leader>fe` | 📁 Explorer（ファイル位置） | 🔵 |
-
----
-
-## 🔀 Git操作
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<leader>gg` | 🔀 LazyGit | 🟢 |
-| `<leader>gc` | 📝 コミット | 🔵 |
-| `<leader>gs` | 📊 Git Status | 🔵 |
-| `<leader>gd` | 📊 Git Diff | 🔵 |
-| `<leader>gb` | 📜 Git Blame | 🔵 |
-| `<leader>gB` | 🌿 Git Branches | 🔵 |
-| `]h` | → 次のHunk | 🔵 |
-| `[h` | ← 前のHunk | 🔵 |
-| `<leader>ghp` | 👁️ Hunkプレビュー | 🔵 |
-| `<leader>ghr` | ↩️ Hunk リセット | 🔵 |
-| `<leader>ghs` | ✅ Hunk ステージ | 🔵 |
-
----
-
-## 💻 コード・LSP
-
-### LSP機能
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `gd` | 📍 定義へジャンプ | 🔵 |
-| `gr` | 🔍 参照一覧 | 🔵 |
-| `gI` | 📍 実装へジャンプ | 🔵 |
-| `gy` | 📍 型定義へジャンプ | 🔵 |
-| `K` | 📖 Hover情報 | 🔵 |
-| `gK` | 📖 Signature Help | 🔵 |
-| `<leader>ca` | 💡 Code Action | 🔵 |
-| `<leader>cr` | 🔄 Rename | 🔵 |
-| `<leader>cf` | ✨ Format | 🔵 |
-
-### 診断
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `]d` | → 次のDiagnostic | 🔵 |
-| `[d` | ← 前のDiagnostic | 🔵 |
-| `]e` | → 次のError | 🔵 |
-| `[e` | ← 前のError | 🔵 |
-| `]w` | → 次のWarning | 🔵 |
-| `[w` | ← 前のWarning | 🔵 |
-| `<leader>xx` | 📋 Trouble Toggle | 🔵 |
-| `<leader>xX` | 📋 Trouble Workspace | 🔵 |
-
----
-
-## 💻 ターミナル
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<leader>tt` | 💻 フローティングターミナル | 🟢 |
-| `<leader>tT` | 💻 ターミナル（cwd） | 🟢 |
-| `<C-/>` | 💻 ターミナルトグル | 🔵 |
-| `<Esc><Esc>` (terminal) | ⌨️ Normalモードへ | 🟢 |
-| `<C-h/j/k/l>` (terminal) | ⬅️⬇️⬆️➡️ ウィンドウ移動 | 🟢 |
-
----
-
-## ⚙️ UI・設定
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<leader>L` | 🔌 Lazy（プラグイン管理） | 🟢 |
-| `<leader>un` | 🔕 通知をすべて消す | 🟢 |
-| `<leader>ul` | 🔢 行番号トグル | 🔵 |
-| `<leader>uw` | 📏 Wrap トグル | 🔵 |
-| `<leader>us` | 🔤 Spelling トグル | 🔵 |
-| `<leader>uc` | 🎨 Colorscheme | 🔵 |
-
----
-
-## 🎯 便利な操作
-
-### テキストオブジェクト
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `viw` | 📝 単語を選択（inner） | Vim標準 |
-| `vaw` | 📝 単語を選択（around） | Vim標準 |
-| `vi"` | 📝 "内を選択 | Vim標準 |
-| `va"` | 📝 "含めて選択 | Vim標準 |
-| `vip` | 📝 段落を選択（inner） | Vim標準 |
-| `vap` | 📝 段落を選択（around） | Vim標準 |
-
-### コメント
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `gcc` | 💬 行コメントトグル | 🔵 |
-| `gc` (visual) | 💬 選択範囲コメント | 🔵 |
-| `gcO` | 💬 上にコメント追加 | 🔵 |
-| `gco` | 💬 下にコメント追加 | 🔵 |
-
-### その他
-
-| キー | 説明 | 種類 |
-|------|------|------|
-| `<leader>sn` | 🔎 Noice検索 | 🔵 |
-| `<leader>L` | 🔌 Lazy（プラグイン管理） | 🔵 |
-| `<leader>cm` | 🔧 Mason（LSPインストール） | 🔵 |
-
----
-
-## 🎓 学習のヒント
-
-### Which-Keyの使い方
-
-1. `<leader>` を押すと、利用可能なキーバインドが表示されます
-2. 各グループ（`f`, `g`, `c`など）を押すと、さらに詳細が表示されます
-3. 途中で `<Esc>` を押すとキャンセルできます
-
-### よく使うキーバインド（初心者向け）
-
-1. **ファイルを開く**: `<leader>ff` → ファイル名を入力
-2. **ファイル保存**: `<leader>fs`
-3. **Explorer開く**: `<leader>e`
-4. **テキスト検索**: `<leader>fg` → 検索ワードを入力
-5. **終了**: `<leader>qq`
-
-### 効率的な編集
-
-1. **行移動**: `V` → `J` or `K` → 行を選択して上下移動
-2. **インデント**: `V` → `>` or `<` → インデント調整
-3. **コメント**: `gcc` → 行コメントトグル
-4. **複数行編集**: `V` → 範囲選択 → `gc` → コメント
-
----
-
-## ⚠️ checkhealth警告について
-
-`:checkhealth which-key`で表示される「overlapping keymaps」警告について。
-
-### 警告の内容
-
-- `<g>` と `<gc>`, `<gcc>`, `<gd>`, etc. の重複
-- `<i>`, `<a>` (visual/operator mode) と text objects の重複
-- `<gc>` と `<gcc>`, `<gco>`, `<gcO>` の重複
-
-### これらは問題ではありません
-
-checkhealth自体が明記している通り：
-
-> ✅ OK Most of these checks are for informational purposes only.  
-> WARNINGS should be treated as a warning, and don't necessarily indicate a problem with your config.  
-> Please |DON'T| report these warnings as an issue.
-
-> ✅ OK Overlapping keymaps are only reported for informational purposes.  
-> This doesn't necessarily mean there is a problem with your config.
-
-**これらは正常なVimの動作です：**
-- `g` → gotoプレフィックス
-- `gc` → commentプレフィックス
-- `gcc` → comment line（gcのサブコマンド）
-- `i`, `a` → text objectプレフィックス
-- `ii`, `ai` → indent text object
-
-### 対策（警告表示を減らす）
-
-`which-key.lua`でpresetsを無効化することで、警告表示を減らせます：
-
-```lua
-presets = {
-  operators = false,
-  motions = false,
-  text_objects = false,
-  windows = false,
-  nav = false,
-  z = false,
-  g = false,
-}
+```startLine:endLine:dotfiles/.config/fcitx5/config
+# ... existing code ...
+TriggerKey=CTRL_SPACE
+SwitchKey=SHIFT_SPACE
+# ... existing code ...
 ```
 
-**重要**: 警告を完全になくすことは可能ですが、それは実用的なキーバインドを壊すことになります。現在の設定が**ベストバランス**です。
+| キー | アクション | 対象 |
+|------|-----------|------|
+| `Ctrl+Space` | Mozc ↔ 英数 切り替え | グローバル |
+| `Shift+Space` | 半角 / 全角 切り替え | グローバル |
+
+入力メソッドは `mozc` → `keyboard-us` の順番。`wayland` を無効化して WSLg/X11 で安定動作させています。
 
 ---
 
-## 📚 参考リンク
+## 2. Ghostty（端末）
 
-- [LazyVim公式ドキュメント](https://www.lazyvim.org/)
-- [Which-Key使い方](https://github.com/folke/which-key.nvim)
-- [Neovim公式チュートリアル](https://neovim.io/doc/user/)
+```startLine:endLine:dotfiles/.config/ghostty/config
+# ... existing code ...
+keybind = ctrl+shift+c=copy_to_clipboard
+keybind = ctrl+shift+v=paste_from_clipboard
+keybind = ctrl+shift+t=new_tab
+keybind = ctrl+shift+w=close_surface
+keybind = f11=toggle_fullscreen
+keybind = ctrl+shift+comma=reload_config
+# ... existing code ...
+```
+
+| キー | アクション | 用途 |
+|------|-----------|------|
+| `Ctrl+Shift+C` | クリップボードへコピー | tmux / Neovim の選択をそのままコピー |
+| `Ctrl+Shift+V` | クリップボードから貼り付け | シェルへの貼り付け |
+| `Ctrl+Shift+T` | 新規タブ | 作業スペースをすばやく増やす |
+| `Ctrl+Shift+W` | 現在タブを閉じる | 終了ショートカット |
+| `F11` | フルスクリーン切替 | 集中モード |
+| `Ctrl+Shift+,` | 設定リロード | `~/.config/ghostty/config` を編集した後に |
 
 ---
 
-## 📝 Neorg
+## 3. tmux（セッション管理）
 
-Neorgファイル編集時の専用キーバインドは別ドキュメントを参照してください：
+```startLine:endLine:dotfiles/.tmux.conf
+# ... existing code ...
+set-option -g prefix C-g
+bind | split-window -h
+bind - split-window -v
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+set-option -g mouse on
+# ... existing code ...
+```
 
-- **[NEORG_KEYBINDS.md](./NEORG_KEYBINDS.md)** - Neorg専用キーバインドチートシート
-
-すべてのNeorgキーバインドは `<LocalLeader>n` プレフィックスに統一されており、他のキーバインドと衝突しません。
+| キー | アクション | 種類 / 備考 |
+|------|-----------|-------------|
+| `Prefix` (`Ctrl+g`) | tmux コマンドモード | 🟢 |
+| `Prefix`+`|` / `Prefix`+`-` | ペイン分割（縦 / 横） | 🟢 |
+| `Prefix`+`h/j/k/l` | ペイン移動 | 🟢（Neovim と統一） |
+| `Prefix`+`H/J/K/L` | ペインリサイズ ±5 | 🟢 |
+| `Prefix`+`c` / `&` | 新規ウィンドウ / 閉じる | 🔵 |
+| `Prefix`+`z` | ペインズーム | 🔵 |
+| マウスホイール↑ | copy-mode へ入る | 🟢 |
+| マウスホイール↓ | copy-mode を抜ける | 🟢 |
+| `Prefix`+`Ctrl+s` / `Prefix`+`Ctrl+r` | セッション保存 / 復元 | 🔵 (`tmux-resurrect`) |
 
 ---
 
-## 🛠️ カスタマイズ
+## 4. Neovim（LazyVim 基盤）
 
-キーバインドを追加・変更したい場合：
+### 4-1. 画面 & バッファ操作
+
+| キー | アクション | プラグイン | 種類 |
+|------|-----------|------------|------|
+| `<leader>fs` | 保存 | - | 🟢 |
+| `<leader>qq` | Neovim を終了 | - | 🔵 |
+| `<S-h>` / `<S-l>` | バッファを前後移動 | - | 🟢 |
+| `<leader>bd` / `<leader>bD` | バッファ削除 / 他バッファ一括削除 | - | 🟢 |
+| `<C-h/j/k/l>` | ウィンドウ移動 | - | 🟢 |
+| `<C-Up/Down/Left/Right>` | ウィンドウリサイズ ±2 | - | 🟢 |
+| `<leader>ww`, `<leader>wm` | ウィンドウピッカー / 最大化 | LazyVim | 🔵 |
+
+### 4-2. ファイル / プロジェクト
+
+| キー | アクション | プラグイン | 種類 |
+|------|-----------|------------|------|
+| `<leader>ff` | ファイル検索 | Telescope | 🔵 |
+| `<leader>fr` | 最近使用ファイル | Telescope | 🔵 |
+| `<leader>fg` | Ripgrep（プロジェクト検索） | Telescope | 🔵 |
+| `<leader>fw` | カーソル下の単語を検索 | Telescope | 🔵 |
+| `<leader>e` / `<leader>E` | Explorer (Snacks) | Snacks | 🟢 |
+| `<leader>fe` | ファイルブラウザ（LazyVimデフォルト） | Snacks | 🔵 |
+| `<leader>tl` | その場で翻訳 (JA) | Translate.nvim | 🟢 |
+
+### 4-3. 編集支援
+
+| キー | アクション | 種類 |
+|------|-----------|------|
+| `J` / `K` (Visual) | 選択行を上下に移動 | 🟢 |
+| `<` / `>` (Visual) | インデント調整 + 選択維持 | 🟢 |
+| `p` (Visual) | レジスタ保持で貼り付け | 🟢 |
+| `J` (Normal) | 行連結 & カーソル保持 | 🟢 |
+| `n` / `N` | 検索結果にジャンプ & 中央揃え | 🟢 |
+| `j` / `k` | wrap 対応の移動 | 🟢 |
+| `<Esc>` | 検索ハイライト解除 | 🟢 |
+| `gcc`, `gc`, `gco`, `gcO` | コメント操作 | 🔵 (`Comment.nvim`) |
+
+### 4-4. LSP / IDE 機能
+
+| キー | アクション | プラグイン | 種類 |
+|------|-----------|------------|------|
+| `gd`, `gD`, `gr`, `gI`, `gy` | ジャンプ各種 | nvim-lspconfig | 🔵 |
+| `K`, `gK` | Hover / Signature Help | nvim-lspconfig | 🔵 |
+| `<leader>ca`, `<leader>cr`, `<leader>cf` | Code Action / Rename / Format | nvim-lspconfig / conform | 🔵 |
+| `]d` / `[d` | 診断メッセージ移動 | vim.diagnostic | 🔵 |
+| `]e` / `[e`, `]w` / `[w` | Error / Warning 移動 | vim.diagnostic | 🔵 |
+| `<leader>xx`, `<leader>xX` | Trouble（診断一覧） | trouble.nvim | 🔵 |
+
+### 4-5. Git / バージョン管理
+
+| キー | アクション | プラグイン | 種類 |
+|------|-----------|------------|------|
+| `<leader>gg` | LazyGit UI | Snacks | 🟢 |
+| `<leader>gs`, `<leader>gd`, `<leader>gb`, `<leader>gB` | Git ステータス / Diff / Blame / Branch | gitsigns.nvim | 🔵 |
+| `<leader>ghs`, `<leader>ghp`, `<leader>ghr` | Hunk ステージ / プレビュー / リセット | gitsigns.nvim | 🔵 |
+| `]h` / `[h` | Hunk 移動 | gitsigns.nvim | 🔵 |
+
+### 4-6. ターミナル / ツール連携
+
+| キー | アクション | プラグイン | 種類 |
+|------|-----------|------------|------|
+| `<leader>tt` | フローティングターミナル | Snacks | 🟢 |
+| `<leader>tT` | CWD に紐づけたターミナル | Snacks | 🟢 |
+| `<C-/>` | ターミナル表示切替 | toggleterm.nvim | 🔵 |
+| `<Esc><Esc>` (Terminal) | Normal モードへ戻る | - | 🟢 |
+| `<C-h/j/k/l>` (Terminal) | ウィンドウ移動 | - | 🟢 |
+
+### 4-7. UI / 各種ツール
+
+| キー | アクション | プラグイン | 種類 |
+|------|-----------|------------|------|
+| `<leader>L` | Lazy UI | lazy.nvim | 🟢 |
+| `<leader>un` | 通知をすべて閉じる | Snacks | 🟢 |
+| `<leader>ul`, `<leader>uw`, `<leader>us` | 行番号 / Wrap / Spell トグル | LazyVim | 🔵 |
+| `<leader>uc` | Colorscheme 切替 | LazyVim | 🔵 |
+| `<leader>cm` | Mason UI | mason.nvim | 🔵 |
+
+---
+
+## 5. プラグイン固有メモ
+
+- **Snacks.nvim**: Explorer (`<leader>e/E`), Terminal (`<leader>tt/tT`), Notifications (`<leader>un`), LazyGit (`<leader>gg`)
+- **Translate.nvim**: `<leader>tl` で即座に日本語訳（選択範囲 / カーソル下）
+- **Remote-Nvim.nvim**: コマンドライン (`:RemoteNvim`) や Telescope Picker から起動。キーバインドは未割当。
+- **Which-Key.nvim**: `<leader>` を押してキーガイドを参照。`g`, `z`, `[` などのプリセットは無効化済みでノイズを削減。
+
+---
+
+## 6. Neorg（ドキュメント / タスク管理）
+
+Neorg は `<LocalLeader>n` プレフィックスに統一。詳細は `NEORG_KEYBINDS.md` を参照。
+
+| キー | 説明 |
+|------|------|
+| `<LocalLeader>nn` | Table of Contents |
+| `<LocalLeader>nts` | タスク状態サイクル |
+| `<LocalLeader>ntd/ntu/ntp/ntc` | Done / Undone / Pending / Cancelled |
+| `<LocalLeader>n>` / `<LocalLeader>n<` | 見出しプロモート / デモート |
+| `<LocalLeader>ncm` | コードブロック拡大表示 |
+
+---
+
+## 7. Which-Key の活用パターン
+
+1. `<leader>` を押して利用可能なグループ（`f`, `g`, `c`, `t`, `u`, `s` …）を確認。
+2. グループ → サブコマンドの順に 2 打以内で必要な操作に到達。
+3. 途中で迷ったら `<Esc>` でキャンセル。
+
+IDE 風の操作感に近づけるため、`<leader>f` = ファイル、`<leader>g` = Git、`<leader>c` = コード、`<leader>t` = ターミナル、`<leader>u` = UI と整理しています。
+
+---
+
+## 8. キーバインド追加のヒント
 
 ```lua
 -- lua/config/keymaps.lua
 local map = vim.keymap.set
-
-map("n", "<leader>xx", "<cmd>YourCommand<cr>", { desc = "説明" })
+map("n", "<leader>xx", "<cmd>YourCommand<CR>", { desc = "説明" })
 ```
 
-Which-Keyグループ名を追加したい場合：
+Which-Key にグループを追加したい場合：
 
 ```lua
 -- lua/plugins/which-key.lua
 spec = {
-  { "<leader>x", group = "説明" },
+  { "<leader>x", group = "Your Group" },
 }
 ```
+
+競合を避けるには、既存グループ（`f`, `g`, `t`, `u` など）に揃えるか、未使用の文字を Which-Key `spec` へ明示的に登録してください。
+
+---
+
+## 参考リンク
+
+- [LazyVim 公式ドキュメント](https://www.lazyvim.org/)
+- [Ghostty Config リファレンス](https://ghostty.org/docs/config)
+- [tmux Cheat Sheet](https://tmuxcheatsheet.com/)
+- [Translate.nvim](https://github.com/uga-rosa/translate.nvim)
+- [Neorg ドキュメント](https://github.com/nvim-neorg/neorg)
 

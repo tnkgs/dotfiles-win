@@ -8,22 +8,21 @@ if [ -f /etc/arch-release ]; then
   
   # GTK設定 - X11を優先使用
   export GDK_BACKEND=x11
-  export GDK_GL=gles
-  
-  # GTK4固有の設定
-  export GTK_CSD=0 # クライアントサイド装飾を無効化
-  export GTK_USE_PORTAL=0 # ポータル経由のダイアログを無効化
+  export GDK_GL=gl
 
-  # GUI環境（$DISPLAYが設定されている）の場合のみIME設定
-  if [ -n "$DISPLAY" ]; then
-    # Wayland環境変数設定
-    export QT_QPA_PLATFORM=xcb
+  # xcvxrsを使用する場合
+  # # wslのhost ipを取得
+  # export HOST_IP=$(ipconfig.exe | iconv -f CP932 -t UTF-8 | sed -e 's/\r//' | grep 'IPv4' | tail -n 1 | cut -d ':' -f 2 | awk '{print $1}')
+  # # Display変数にhost ipを設定 (VcXsrvを使用する場合)
+  # export DISPLAY=$HOST_IP:0.0
 
-    # IME環境変数設定
-    export GTK_IM_MODULE=fcitx
-    export QT_IM_MODULE=fcitx
-    export XMODIFIERS=@im=fcitx
-  fi
+  # Wayland環境変数設定
+  export QT_QPA_PLATFORM=xcb
+
+  # IME環境変数設定
+  export GTK_IM_MODULE=fcitx
+  export QT_IM_MODULE=fcitx
+  export XMODIFIERS=@im=fcitx
 fi
 
 export LANG=ja_JP.UTF-8

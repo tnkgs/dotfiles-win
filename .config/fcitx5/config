@@ -1,36 +1,83 @@
-# Fcitx5 Configuration
-# 日本語入力設定（WSLg環境用）
-
 [Hotkey]
-# 入力メソッド切り替えキー
-# Ctrl+Space: 日本語入力切り替え
-TriggerKey=CTRL_SPACE
-# Shift+Space: 半角/全角切り替え
-SwitchKey=SHIFT_SPACE
+# Enumerate when holding modifier of Toggle key
+EnumerateWithTriggerKeys=True
+# Enumerate Input Method Forward
+EnumerateForwardKeys=
+# Enumerate Input Method Backward
+EnumerateBackwardKeys=
+# Skip first input method while enumerating
+EnumerateSkipFirst=False
+# Time limit in milliseconds for triggering modifier key shortcuts
+ModifierOnlyKeyTimeout=250
+
+[Hotkey/TriggerKeys]
+0=Control+space
+1=Zenkaku_Hankaku
+2=Hangul
+
+[Hotkey/ActivateKeys]
+0=Hangul_Hanja
+
+[Hotkey/DeactivateKeys]
+0=Hangul_Romaja
+
+[Hotkey/AltTriggerKeys]
+0=Shift_L
+
+[Hotkey/EnumerateGroupForwardKeys]
+0=Super+space
+
+[Hotkey/EnumerateGroupBackwardKeys]
+0=Shift+Super+space
+
+[Hotkey/PrevPage]
+0=Up
+
+[Hotkey/NextPage]
+0=Down
+
+[Hotkey/PrevCandidate]
+0=Shift+Tab
+
+[Hotkey/NextCandidate]
+0=Tab
+
+[Hotkey/TogglePreedit]
+0=Control+Alt+P
 
 [Behavior]
-# WSLg環境ではWaylandが不安定なため、X11のみ使用
-# Waylandを無効化
-EnabledAddons=xcb,xim,dbus,ibusfrontend,keyboard,clipboard
-DisabledAddons=wayland,waylandim
-
-[General]
-# 入力メソッドの順序
-DefaultInputMethod=keyboard-jp
-
-[InputMethod]
-# 入力メソッドのリスト
-# 0: キーボード（日本語配列）
-# 1: Mozc（日本語IME）
-InputMethod[0]=keyboard-jp
-InputMethod[0]/Name=keyboard-jp
-InputMethod[0]/Layout=jp
-InputMethod[0]/Icon=fcitx-keyboard-jp
-InputMethod[0]/Label=キーボード
-
-InputMethod[1]=mozc
-InputMethod[1]/Name=mozc
-InputMethod[1]/Layout=
-InputMethod[1]/Icon=mozc
-InputMethod[1]/Label=あ
+# Active By Default
+ActiveByDefault=False
+# Reset state on Focus In
+resetStateWhenFocusIn=No
+# Share Input State
+ShareInputState=No
+# Show preedit in application
+PreeditEnabledByDefault=True
+# Show Input Method Information when switch input method
+ShowInputMethodInformation=True
+# Show Input Method Information when changing focus
+showInputMethodInformationWhenFocusIn=False
+# Show compact input method information
+CompactInputMethodInformation=True
+# Show first input method information
+ShowFirstInputMethodInformation=True
+# Default page size
+DefaultPageSize=5
+# Override XKB Option
+OverrideXkbOption=False
+# Custom XKB Option
+CustomXkbOption=
+# Force Enabled Addons
+EnabledAddons=
+# Force Disabled Addons
+DisabledAddons=
+# Preload input method to be used by default
+PreloadInputMethod=True
+# Allow input method in the password field
+AllowInputMethodForPassword=False
+# Show preedit text when typing password
+ShowPreeditForPassword=False
+# Interval of saving user data in minutes
+AutoSavePeriod=30
 

@@ -103,4 +103,4 @@ code C:\Users\kento\dotfiles\.wezterm.lua  # Source config
 **WezTerm**: Catppuccin Mocha + 半透過 (85%) + WSL Arch Linux デフォルト  
 **Font**: Moralerspace HWJPDOC Nerd Font (auto-installed)
 
-詳細: `POWERSHELL_SETUP.md`, `FONT_INSTALLATION_GUIDE.md`, `WEZTERM_SETUP.md`
+詳細: `docs/POWERSHELL_SETUP.md`, `docs/FONT_INSTALLATION_GUIDE.md`, `docs/WEZTERM_SETUP.md`

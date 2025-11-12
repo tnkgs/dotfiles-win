@@ -57,21 +57,18 @@ font-size = 11
 # ============================================================================
 # GTK/ウィンドウ設定
 # ============================================================================
-# GTKのタイトルバーとウィンドウ装飾を有効化（安定性のため）
-gtk-titlebar = true
-window-decoration = true
+# GTKのウィンドウ装飾をxserverで管理
+window-decoration = auto
 
 # 単一インスタンスモード（複数ウィンドウを1プロセスで管理）
-gtk-single-instance = false
-
-# ウィンドウタイトル設定（タスクバー表示用）
-window-title-font-family = Moralerspace Neon HWJPDOC
+gtk-single-instance = true
 
 # ============================================================================
 # 見た目
 # ============================================================================
 # 背景の透明度（70-90%で liquid glass 効果）
-background-opacity = 0.75
+background-opacity = 0.7
+background-blur = 10
 
 # 背景色（Catppuccin Mocha base色で深みのある背景）
 background = #1e1e2e
@@ -82,11 +79,6 @@ foreground = #cdd6f4
 # カーソル色設定（明るい青でコントラストを確保）
 cursor-color = #89b4fa
 cursor-text = #1e1e2e
-
-# ブラー効果（注意: WSLg/Windows環境では動作しない可能性が高い）
-# background-blur-radius機能はcompositorが必要なため、Linux Wayland環境でのみ動作
-# WSLg環境では代わりに透明度で視覚効果を実現
-# background-blur-radius = 20
 
 # ウィンドウパディング（グラスモルフィズム風の余白）
 window-padding-x = 4
@@ -134,9 +126,6 @@ palette = 15=#cdd6f4
 # ============================================================================
 # パフォーマンス
 # ============================================================================
-# 垂直同期（ティアリング防止）
-window-vsync = true
-
 # 非フォーカス時の透明度
 unfocused-split-opacity = 0.8
 

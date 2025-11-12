@@ -1,5 +1,11 @@
 # archlinuxの操作メモ
 
+wslのupdate
+
+```sh
+wsl --update --pre-release
+```
+
 ## weztermの導入
 
 ```powershell
@@ -126,6 +132,15 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 
 # 以下はinstall.shで対応済みなので不要
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+```
+
+## Dockerの導入
+
+```sh
+sudo pacman -S docker docker-compose
+sudo systemctl enable --now docker.service
+sudo usermod -aG docker $USER
+newgrp docker
 ```
 
 ## pacmanで導入したパッケージ

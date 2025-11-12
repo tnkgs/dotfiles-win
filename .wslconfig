@@ -1,0 +1,6 @@
+# WSL Configuration
+# Place this file in: C:\Users\kento\.wslconfig
+# After changes, restart WSL: wsl --shutdown
+
+[wsl2]
+guiApplications=true

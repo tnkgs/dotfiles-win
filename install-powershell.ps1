@@ -106,38 +106,38 @@ function Install-WeztermConfig {
     }
 }
 
-function Install-WslgConfig {
-    Write-ColorOutput "Installing WSLg configuration..." "Green"
+function Install-WslConfig {
+    Write-ColorOutput "Installing WSL configuration..." "Green"
     
-    $wslgSourcePath = "C:\Users\kento\dotfiles\.wslgconfig"
-    $wslgDestPath = "C:\Users\kento\.wslgconfig"
+    $wslSourcePath = "C:\Users\kento\dotfiles\.wslconfig"
+    $wslDestPath = "C:\Users\kento\.wslconfig"
     
     try {
         # Check if source file exists
-        if (!(Test-Path $wslgSourcePath)) {
-            Write-ColorOutput "WSLg config not found: $wslgSourcePath" "Yellow"
-            Write-ColorOutput "Skipping WSLg config installation" "Yellow"
+        if (!(Test-Path $wslSourcePath)) {
+            Write-ColorOutput "WSL config not found: $wslSourcePath" "Yellow"
+            Write-ColorOutput "Skipping WSL config installation" "Yellow"
             return $false
         }
         
         # Backup existing config
-        if (Test-Path $wslgDestPath) {
-            Write-ColorOutput "Backing up existing WSLg config: $wslgDestPath -> $wslgDestPath.backup" "Yellow"
-            Copy-Item $wslgDestPath "$wslgDestPath.backup" -Force
+        if (Test-Path $wslDestPath) {
+            Write-ColorOutput "Backing up existing WSL config: $wslDestPath -> $wslDestPath.backup" "Yellow"
+            Copy-Item $wslDestPath "$wslDestPath.backup" -Force
         }
         
-        # Copy WSLg config
-        Write-ColorOutput "Copying WSLg config to home directory..." "Blue"
-        Copy-Item $wslgSourcePath $wslgDestPath -Force
-        Write-ColorOutput "WSLg config installed successfully!" "Green"
-        Write-ColorOutput "Config location: $wslgDestPath" "Blue"
+        # Copy WSL config
+        Write-ColorOutput "Copying WSL config to home directory..." "Blue"
+        Copy-Item $wslSourcePath $wslDestPath -Force
+        Write-ColorOutput "WSL config installed successfully!" "Green"
+        Write-ColorOutput "Config location: $wslDestPath" "Blue"
         Write-ColorOutput "" "White"
-        Write-ColorOutput "NOTE: Restart WSL to apply WSLg changes:" "Yellow"
+        Write-ColorOutput "NOTE: Restart WSL to apply WSL changes:" "Yellow"
         Write-ColorOutput "  wsl --shutdown" "Cyan"
         
         return $true
     } catch {
-        Write-ColorOutput "Failed to install WSLg config: $($_.Exception.Message)" "Red"
+        Write-ColorOutput "Failed to install WSL config: $($_.Exception.Message)" "Red"
         return $false
     }
 }
@@ -290,10 +290,10 @@ function Install-PowerShellProfile {
         Write-ColorOutput "Warning: WezTerm config installation failed, but continuing..." "Yellow"
     }
     
-    # Install WSLg config
+    # Install WSL config
     Write-ColorOutput "" "White"
-    if (!(Install-WslgConfig)) {
-        Write-ColorOutput "Warning: WSLg config installation failed, but continuing..." "Yellow"
+    if (!(Install-WslConfig)) {
+        Write-ColorOutput "Warning: WSL config installation failed, but continuing..." "Yellow"
     }
     
     # Copy profile from WSL
@@ -316,7 +316,7 @@ function Install-PowerShellProfile {
         Write-ColorOutput "3. Or set font in Windows Terminal:" "Cyan"
         Write-ColorOutput "   Ctrl+, -> Profiles -> PowerShell -> Appearance -> Font face:" "Gray"
         Write-ColorOutput "   'Moralerspace Neon HWJPDOC'" "White"
-        Write-ColorOutput "4. WSLg config installed - Restart WSL for GUI app optimization:" "Cyan"
+        Write-ColorOutput "4. WSL config installed - Restart WSL for GUI app optimization:" "Cyan"
         Write-ColorOutput "   wsl --shutdown" "Gray"
         Write-ColorOutput "5. Reload profile: reload or restart PowerShell" "Cyan"
         Write-ColorOutput "6. Your theme is set to: powerlevel10k_rainbow" "Magenta"
@@ -367,16 +367,16 @@ function Show-Help {
     Write-ColorOutput "PowerShell Profile Installer" "Cyan"
     Write-ColorOutput "=============================" "Cyan"
     Write-ColorOutput "" "White"
-    Write-ColorOutput "Usage: .\install-powershell.ps1 [install|uninstall|test|check|font|wezterm|wslg|help]" "White"
+    Write-ColorOutput "Usage: .\install-powershell.ps1 [install|uninstall|test|check|font|wezterm|wsl|help]" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Commands:" "Yellow"
-    Write-ColorOutput "  install   - Install PowerShell profile + modules + Moralerspace font + WezTerm + WSLg config" "White"
+    Write-ColorOutput "  install   - Install PowerShell profile + modules + Moralerspace font + WezTerm + WSL config" "White"
     Write-ColorOutput "  uninstall - Remove PowerShell profile" "White"
     Write-ColorOutput "  test      - Test PowerShell profile syntax" "White"
     Write-ColorOutput "  check     - Check PowerShell installation" "White"
     Write-ColorOutput "  font      - Install Moralerspace HWJPDOC font only" "White"
     Write-ColorOutput "  wezterm   - Install WezTerm config only" "White"
-    Write-ColorOutput "  wslg      - Install WSLg config only" "White"
+    Write-ColorOutput "  wsl      - Install WSL config only" "White"
     Write-ColorOutput "  help      - Show this help message" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Prerequisites (manual installation):" "Yellow"
@@ -388,14 +388,14 @@ function Show-Help {
     Write-ColorOutput "  • posh-git             - Enhanced Git integration" "White"
     Write-ColorOutput "  • Moralerspace HWJPDOC - Japanese programming font" "White"
     Write-ColorOutput "  • WezTerm config       - Cool terminal emulator config with transparency" "White"
-    Write-ColorOutput "  • WSLg config          - WSL GUI optimization for Ghostty/GTK apps" "White"
+    Write-ColorOutput "  • WSL config          - WSL GUI optimization for Ghostty/GTK apps" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Recommended font setting:" "Yellow"
     Write-ColorOutput "  'Moralerspace Argon HWJPDOC', 'Consolas', monospace" "Cyan"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Note: The bin directory is used for custom tools and scripts" "Gray"
     Write-ColorOutput "" "White"
-    Write-ColorOutput "WSLg config requires WSL restart:" "Gray"
+    Write-ColorOutput "WSL config requires WSL restart:" "Gray"
     Write-ColorOutput "  wsl --shutdown" "DarkGray"
 }
 
@@ -421,8 +421,8 @@ switch ($Action.ToLower()) {
     "wezterm" {
         Install-WeztermConfig
     }
-    "wslg" {
-        Install-WslgConfig
+    "wsl" {
+        Install-WslConfig
     }
     "help" {
         Show-Help
