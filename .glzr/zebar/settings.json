@@ -3,7 +3,7 @@
   "startupConfigs": [
     {
       "pack": "thearturca.bar-rose-pine",
-      "widget": "with-glazewm",
+      "widget": "bar-glazewm",
       "preset": "default"
     }
   ]
