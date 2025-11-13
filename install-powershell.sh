@@ -25,11 +25,45 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+convert_windows_path_to_wsl() {
+    local win_path="$1"
+
+    if [ -z "$win_path" ]; then
+        return 1
+    fi
+
+    local drive_letter="${win_path:0:1}"
+    local remainder="${win_path:2}"
+
+    remainder="${remainder//\\//}"
+    remainder="${remainder#/}"
+
+    printf '/mnt/%s/%s\n' "$(echo "$drive_letter" | tr 'A-Z' 'a-z')" "$remainder"
+}
+
+get_windows_dotfiles_path() {
+    local win_profile
+    win_profile=$(cmd.exe /c echo %USERPROFILE% 2>/dev/null | tr -d '\r')
+    if [ -z "$win_profile" ]; then
+        return 1
+    fi
+
+    local unix_profile
+    unix_profile=$(convert_windows_path_to_wsl "$win_profile") || return 1
+    printf '%s/dotfiles\n' "$unix_profile"
+}
+
+WINDOWS_DOTFILES="$(get_windows_dotfiles_path)"
+if [ -z "$WINDOWS_DOTFILES" ]; then
+    echo -e "${RED}Failed to determine Windows user profile path.${NC}"
+    exit 1
+fi
+
 # Function to install PowerShell profile
 install_powershell_profile() {
     echo -e "${GREEN}Installing PowerShell profile...${NC}"
     
-    local windows_dotfiles="/mnt/c/Users/kento/dotfiles"
+    local windows_dotfiles="$WINDOWS_DOTFILES"
     local ps_script="$windows_dotfiles/install-powershell.ps1"
     
     if [ -f "$ps_script" ]; then
@@ -45,7 +79,7 @@ install_powershell_profile() {
 uninstall_powershell_profile() {
     echo -e "${YELLOW}Uninstalling PowerShell profile...${NC}"
     
-    local windows_dotfiles="/mnt/c/Users/kento/dotfiles"
+    local windows_dotfiles="$WINDOWS_DOTFILES"
     local ps_script="$windows_dotfiles/install-powershell.ps1"
     
     if [ -f "$ps_script" ]; then
@@ -76,7 +110,7 @@ check_powershell() {
 test_powershell_profile() {
     echo -e "${BLUE}Testing PowerShell profile...${NC}"
     
-    local windows_dotfiles="/mnt/c/Users/kento/dotfiles"
+    local windows_dotfiles="$WINDOWS_DOTFILES"
     local ps_script="$windows_dotfiles/install-powershell.ps1"
     
     if [ -f "$ps_script" ]; then
@@ -92,7 +126,7 @@ test_powershell_profile() {
 install_font_only() {
     echo -e "${BLUE}Installing Moralerspace HWJPDOC font...${NC}"
     
-    local windows_dotfiles="/mnt/c/Users/kento/dotfiles"
+    local windows_dotfiles="$WINDOWS_DOTFILES"
     local ps_script="$windows_dotfiles/install-powershell.ps1"
     
     if [ -f "$ps_script" ]; then

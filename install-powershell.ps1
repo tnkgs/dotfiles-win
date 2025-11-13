@@ -16,8 +16,14 @@
 # - 'Moralerspace Argon HWJPDOC', 'Consolas', monospace
 
 param(
-    [string]$Action = "install"
+    [string]$Action = "install",
+    [string]$GlazewmProfile = "sugimoto-pc"
 )
+
+$UserProfile = [Environment]::GetFolderPath("UserProfile")
+$UserBinPath = Join-Path $UserProfile "bin"
+$DotfilesPath = Split-Path -Parent $PSCommandPath
+$SymlinkFallbackMessage = "Symbolic link creation failed, falling back to file copy."
 
 # Colors for output
 $ErrorActionPreference = "Continue"
@@ -28,6 +34,61 @@ function Write-ColorOutput {
         [string]$Color = "White"
     )
     Write-Host $Message -ForegroundColor $Color
+}
+
+function Backup-AndRemoveItem {
+    param(
+        [string]$Path,
+        [string]$Description
+    )
+
+    if (Test-Path $Path) {
+        $backupPath = "$Path.backup"
+        Write-ColorOutput "Backing up existing ${Description}: $Path -> $backupPath" "Yellow"
+        $item = Get-Item $Path -Force
+        if ($item.PSIsContainer) {
+            Copy-Item $Path $backupPath -Force -Recurse
+            Remove-Item $Path -Recurse -Force
+        } else {
+            Copy-Item $Path $backupPath -Force
+            Remove-Item $Path -Force
+        }
+    }
+}
+
+function Set-SymbolicLinkOrCopy {
+    param(
+        [string]$SourcePath,
+        [string]$DestinationPath,
+        [string]$Description
+    )
+
+    $sourceItem = Get-Item $SourcePath -Force
+    $isDirectory = $sourceItem.PSIsContainer
+
+    try {
+        New-Item -ItemType SymbolicLink -Path $DestinationPath -Target $SourcePath -Force | Out-Null
+        Write-ColorOutput "$Description linked successfully!" "Green"
+        Write-ColorOutput "Link: $DestinationPath -> $SourcePath" "Blue"
+        return $true
+    } catch {
+        Write-ColorOutput "Failed to create symbolic link for ${Description}: $($_.Exception.Message)" "Yellow"
+        Write-ColorOutput $SymlinkFallbackMessage "Yellow"
+
+        try {
+            if ($isDirectory) {
+                Copy-Item -Path $SourcePath -Destination $DestinationPath -Recurse -Force
+            } else {
+                Copy-Item -Path $SourcePath -Destination $DestinationPath -Force
+            }
+            Write-ColorOutput "$Description copied successfully!" "Green"
+            Write-ColorOutput "Copy: $SourcePath -> $DestinationPath" "Blue"
+            return $true
+        } catch {
+            Write-ColorOutput "Failed to copy ${Description}: $($_.Exception.Message)" "Red"
+            return $false
+        }
+    }
 }
 
 function Test-PowerShellInstallation {
@@ -47,7 +108,7 @@ function Test-PowerShellInstallation {
 function Initialize-UserBinDirectory {
     Write-ColorOutput "Setting up user bin directory..." "Green"
     
-    $binPath = "C:\Users\kento\bin"
+    $binPath = $UserBinPath
     
     # Create bin directory if it doesn't exist
     if (!(Test-Path $binPath)) {
@@ -83,23 +144,16 @@ function Initialize-UserBinDirectory {
 function Install-WeztermConfig {
     Write-ColorOutput "Installing WezTerm configuration..." "Green"
     
-    $weztermSourcePath = "C:\Users\kento\dotfiles\.wezterm.lua"
-    $weztermDestPath = "C:\Users\kento\.wezterm.lua"
+    $weztermSourcePath = Join-Path $DotfilesPath ".wezterm.lua"
+    $weztermDestPath = Join-Path $UserProfile ".wezterm.lua"
     
     try {
-        # Backup existing config
-        if (Test-Path $weztermDestPath) {
-            Write-ColorOutput "Backing up existing WezTerm config: $weztermDestPath -> $weztermDestPath.backup" "Yellow"
-            Copy-Item $weztermDestPath "$weztermDestPath.backup" -Force
+        Backup-AndRemoveItem -Path $weztermDestPath -Description "WezTerm config"
+        if (Set-SymbolicLinkOrCopy -SourcePath $weztermSourcePath -DestinationPath $weztermDestPath -Description "WezTerm config") {
+            return $true
         }
         
-        # Copy WezTerm config
-        Write-ColorOutput "Copying WezTerm config to home directory..." "Blue"
-        Copy-Item $weztermSourcePath $weztermDestPath -Force
-        Write-ColorOutput "WezTerm config installed successfully!" "Green"
-        Write-ColorOutput "Config location: $weztermDestPath" "Blue"
-        
-        return $true
+        return $false
     } catch {
         Write-ColorOutput "Failed to install WezTerm config: $($_.Exception.Message)" "Red"
         return $false
@@ -109,8 +163,8 @@ function Install-WeztermConfig {
 function Install-WslConfig {
     Write-ColorOutput "Installing WSL configuration..." "Green"
     
-    $wslSourcePath = "C:\Users\kento\dotfiles\.wslconfig"
-    $wslDestPath = "C:\Users\kento\.wslconfig"
+    $wslSourcePath = Join-Path $DotfilesPath ".wslconfig"
+    $wslDestPath = Join-Path $UserProfile ".wslconfig"
     
     try {
         # Check if source file exists
@@ -120,22 +174,16 @@ function Install-WslConfig {
             return $false
         }
         
-        # Backup existing config
-        if (Test-Path $wslDestPath) {
-            Write-ColorOutput "Backing up existing WSL config: $wslDestPath -> $wslDestPath.backup" "Yellow"
-            Copy-Item $wslDestPath "$wslDestPath.backup" -Force
+        Backup-AndRemoveItem -Path $wslDestPath -Description "WSL config"
+        
+        if (Set-SymbolicLinkOrCopy -SourcePath $wslSourcePath -DestinationPath $wslDestPath -Description "WSL config") {
+            Write-ColorOutput "" "White"
+            Write-ColorOutput "NOTE: Restart WSL to apply WSL changes:" "Yellow"
+            Write-ColorOutput "  wsl --shutdown" "Cyan"
+            return $true
         }
         
-        # Copy WSL config
-        Write-ColorOutput "Copying WSL config to home directory..." "Blue"
-        Copy-Item $wslSourcePath $wslDestPath -Force
-        Write-ColorOutput "WSL config installed successfully!" "Green"
-        Write-ColorOutput "Config location: $wslDestPath" "Blue"
-        Write-ColorOutput "" "White"
-        Write-ColorOutput "NOTE: Restart WSL to apply WSL changes:" "Yellow"
-        Write-ColorOutput "  wsl --shutdown" "Cyan"
-        
-        return $true
+        return $false
     } catch {
         Write-ColorOutput "Failed to install WSL config: $($_.Exception.Message)" "Red"
         return $false
@@ -226,6 +274,99 @@ function Install-MoralerspaceFont {
     }
 }
 
+function Install-GlazewmProfile {
+    param(
+        [string]$SourceDir,
+        [string]$DestinationRoot
+    )
+
+    $glazewmDestDir = Join-Path $DestinationRoot "glazewm"
+    if (!(Test-Path $glazewmDestDir)) {
+        Write-ColorOutput "Creating destination glazewm directory: $glazewmDestDir" "Blue"
+        New-Item -ItemType Directory -Path $glazewmDestDir -Force | Out-Null
+    }
+
+    $profilesSourceDir = Join-Path $SourceDir "profiles"
+    if (!(Test-Path $profilesSourceDir)) {
+        Write-ColorOutput "Glazewm profiles directory not found: $profilesSourceDir" "Red"
+        return $false
+    }
+
+    $profilesDestPath = Join-Path $glazewmDestDir "profiles"
+    Backup-AndRemoveItem -Path $profilesDestPath -Description "glazewm profiles"
+    if (!(Set-SymbolicLinkOrCopy -SourcePath $profilesSourceDir -DestinationPath $profilesDestPath -Description "glazewm profiles directory")) {
+        return $false
+    }
+
+    $selectedProfileName = $(if ([string]::IsNullOrWhiteSpace($GlazewmProfile)) { "default" } else { $GlazewmProfile })
+    if ($selectedProfileName -notmatch '\.ya?ml$') {
+        $selectedProfileName = "$selectedProfileName.yaml"
+    }
+
+    $profileSourcePath = Join-Path $profilesSourceDir $selectedProfileName
+    if (!(Test-Path $profileSourcePath)) {
+        Write-ColorOutput "Glazewm profile not found: $selectedProfileName" "Yellow"
+        $availableProfiles = Get-ChildItem -Path $profilesSourceDir -Filter *.yaml
+        if ($availableProfiles.Count -eq 0) {
+            Write-ColorOutput "No glazewm profiles available in $profilesSourceDir" "Red"
+            return $false
+        }
+        $profileSourcePath = $availableProfiles[0].FullName
+        $selectedProfileName = $availableProfiles[0].Name
+        Write-ColorOutput "Falling back to profile: $selectedProfileName" "Yellow"
+    }
+
+    $configDestPath = Join-Path $glazewmDestDir "config.yaml"
+    Backup-AndRemoveItem -Path $configDestPath -Description "glazewm config"
+    if (!(Set-SymbolicLinkOrCopy -SourcePath $profileSourcePath -DestinationPath $configDestPath -Description "glazewm config ($selectedProfileName)")) {
+        return $false
+    }
+
+    Write-ColorOutput "Glazewm profile applied: $selectedProfileName" "Green"
+    return $true
+}
+
+function Install-GlzrConfigs {
+    Write-ColorOutput "Installing .glzr configurations..." "Green"
+
+    $glzrSourcePath = Join-Path $DotfilesPath ".glzr"
+    if (!(Test-Path $glzrSourcePath)) {
+        Write-ColorOutput ".glzr source directory not found: $glzrSourcePath" "Yellow"
+        return $false
+    }
+
+    $glzrDestRoot = Join-Path $UserProfile ".glzr"
+    if (!(Test-Path $glzrDestRoot)) {
+        Write-ColorOutput "Creating destination .glzr directory: $glzrDestRoot" "Blue"
+        New-Item -ItemType Directory -Path $glzrDestRoot -Force | Out-Null
+    }
+
+    $glazewmSourceDir = Join-Path $glzrSourcePath "glazewm"
+    if (Test-Path $glazewmSourceDir) {
+        if (!(Install-GlazewmProfile -SourceDir $glazewmSourceDir -DestinationRoot $glzrDestRoot)) {
+            Write-ColorOutput "Failed to install glazewm profile configuration" "Red"
+            return $false
+        }
+    }
+
+    $items = Get-ChildItem -Path $glzrSourcePath -Force | Where-Object { $_.Name -ne "glazewm" }
+    if ($items.Count -eq 0) {
+        Write-ColorOutput ".glzr source directory is empty" "Yellow"
+        return $true
+    }
+
+    foreach ($item in $items) {
+        $destPath = Join-Path $glzrDestRoot $item.Name
+        Backup-AndRemoveItem -Path $destPath -Description ".glzr\$($item.Name)"
+        if (!(Set-SymbolicLinkOrCopy -SourcePath $item.FullName -DestinationPath $destPath -Description ".glzr\$($item.Name)")) {
+            return $false
+        }
+    }
+
+    Write-ColorOutput ".glzr configurations installed successfully!" "Green"
+    return $true
+}
+
 function Install-PowerShellModules {
     Write-ColorOutput "Installing PowerShell modules..." "Green"
     
@@ -253,7 +394,7 @@ function Install-PowerShellProfile {
     Write-ColorOutput "Installing PowerShell profile..." "Green"
     
     $profilePath = $PROFILE
-    $wslSourcePath = "C:\Users\kento\dotfiles\Microsoft.PowerShell_profile.ps1"
+    $wslSourcePath = Join-Path $DotfilesPath "Microsoft.PowerShell_profile.ps1"
     
     # Create profile directory if it doesn't exist
     $profileDir = Split-Path $profilePath -Parent
@@ -264,8 +405,7 @@ function Install-PowerShellProfile {
     
     # Backup existing profile
     if (Test-Path $profilePath) {
-        Write-ColorOutput "Backing up existing profile: $profilePath -> $profilePath.backup" "Yellow"
-        Copy-Item $profilePath "$profilePath.backup" -Force
+        Backup-AndRemoveItem -Path $profilePath -Description "PowerShell profile"
     }
     
     # Setup user bin directory
@@ -296,11 +436,18 @@ function Install-PowerShellProfile {
         Write-ColorOutput "Warning: WSL config installation failed, but continuing..." "Yellow"
     }
     
+    # Install Glzr configs
+    Write-ColorOutput "" "White"
+    if (!(Install-GlzrConfigs)) {
+        Write-ColorOutput "Warning: .glzr configuration installation failed, but continuing..." "Yellow"
+    }
+    
     # Copy profile from WSL
     try {
         Write-ColorOutput "" "White"
-        Write-ColorOutput "Copying profile from WSL..." "Blue"
-        Copy-Item $wslSourcePath $profilePath -Force
+        if (!(Set-SymbolicLinkOrCopy -SourcePath $wslSourcePath -DestinationPath $profilePath -Description "PowerShell profile")) {
+            return $false
+        }
         Write-ColorOutput "PowerShell profile installed successfully!" "Green"
         Write-ColorOutput "Profile location: $profilePath" "Blue"
         Write-ColorOutput "" "White"
@@ -368,6 +515,10 @@ function Show-Help {
     Write-ColorOutput "=============================" "Cyan"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Usage: .\install-powershell.ps1 [install|uninstall|test|check|font|wezterm|wsl|help]" "White"
+    Write-ColorOutput "       .\install-powershell.ps1 install -GlazewmProfile thinkpad" "DarkGray"
+    Write-ColorOutput "" "White"
+    Write-ColorOutput "Options:" "Yellow"
+    Write-ColorOutput "  -GlazewmProfile <name>  - Apply glazewm profile from .glzr\glazewm\profiles (default: sugimot-pc)" "White"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Commands:" "Yellow"
     Write-ColorOutput "  install   - Install PowerShell profile + modules + Moralerspace font + WezTerm + WSL config" "White"
@@ -383,7 +534,7 @@ function Show-Help {
     Write-ColorOutput "  • Oh My Posh:  winget install JanDeDobbeleer.OhMyPosh" "Cyan"
     Write-ColorOutput "" "White"
     Write-ColorOutput "Auto-installed items:" "Yellow"
-    Write-ColorOutput "  • User bin directory   - C:\Users\kento\bin (added to PATH)" "White"
+    Write-ColorOutput "  • User bin directory   - $UserBinPath (added to PATH)" "White"
     Write-ColorOutput "  • Terminal-Icons       - Colorful file/folder icons" "White"
     Write-ColorOutput "  • posh-git             - Enhanced Git integration" "White"
     Write-ColorOutput "  • Moralerspace HWJPDOC - Japanese programming font" "White"

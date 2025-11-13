@@ -5,10 +5,13 @@
     "lazyvim.plugins.extras.ai.sidekick",
     "lazyvim.plugins.extras.coding.blink",
     "lazyvim.plugins.extras.coding.nvim-cmp",
+    "lazyvim.plugins.extras.formatting.prettier",
     "lazyvim.plugins.extras.lang.json",
     "lazyvim.plugins.extras.lang.markdown",
     "lazyvim.plugins.extras.lang.toml",
-    "lazyvim.plugins.extras.lang.typescript"
+    "lazyvim.plugins.extras.lang.typescript",
+    "lazyvim.plugins.extras.lang.yaml",
+    "lazyvim.plugins.extras.linting.eslint"
   ],
   "install_version": 8,
   "news": {

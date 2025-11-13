@@ -2,9 +2,13 @@
 
 ## インストール
 
+> **前提:** シンボリックリンク作成のために [Sudo for Windows](https://learn.microsoft.com/windows/sudo/) を有効化しておくことを推奨します（または管理者権限でPowerShellを実行するか、開発者モードを有効化してください）。
+
 ```powershell
 winget install JanDeDobbeleer.OhMyPosh
 .\install-powershell.ps1 install
+# 端末に合わせて GlazeWM プロファイルを指定（例: ThinkPad 環境）
+# .\install-powershell.ps1 install -GlazewmProfile thinkpad
 ```
 
 自動インストール：Terminal-Icons, posh-git, Moralerspace HWJPDOC

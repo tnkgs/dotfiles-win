@@ -12,7 +12,8 @@ Import-Module posh-git -ErrorAction SilentlyContinue
 # Initialize Oh My Posh with a theme
 try {
     # Use custom theme from dotfiles
-    $customTheme = "C:\Users\kento\dotfiles\ohmyposh-theme.omp.json"
+    $dotfilesPath = Join-Path $env:USERPROFILE "dotfiles"
+    $customTheme = Join-Path $dotfilesPath "ohmyposh-theme.omp.json"
     if (Test-Path $customTheme) {
         oh-my-posh init pwsh --config $customTheme | Invoke-Expression
     } else {

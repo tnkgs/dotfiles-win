@@ -50,9 +50,13 @@ source ~/.zshrc
 ```
 
 ### PowerShell (Oh My Posh + custom theme)
+> **前提:** シンボリックリンク作成を自動化するため、[Sudo for Windows](https://learn.microsoft.com/windows/sudo/) を有効化してから実行することを推奨します（または管理者権限でPowerShellを起動するか、開発者モードを有効にしてください）。
+
 ```powershell
 winget install JanDeDobbeleer.OhMyPosh
 .\install-powershell.ps1 install  # Modules + Moralerspace font + WezTerm config
+# GlazeWM のプロファイルを切り替えたい場合（例: ThinkPad）
+# .\install-powershell.ps1 install -GlazewmProfile thinkpad
 ```
 
 **推奨:** WezTerm (半透過背景、Catppuccin Mocha、WSL Arch Linuxデフォルト)  

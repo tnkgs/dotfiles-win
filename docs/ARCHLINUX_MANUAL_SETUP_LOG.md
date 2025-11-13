@@ -153,7 +153,7 @@ sudo pacman -S tmux
 # システム情報表示
 sudo pacman -S screeenfetch
 # グラフィックスドライバ
-sudo pacman -S mesa 
+sudo pacman -S mesa
 # Vulkan対応
 sudo pacman -S vulkan-dzn
 # Vulkan対応
@@ -208,7 +208,7 @@ yay -S python-aiohttp-oauthlib
 yay -S xorg-xeyes
 # Windowsからssh-agentサービスをブリッジする
 yay -S wsl2-ssh-agent
-# Widnows HelloによるPAM認証 
+# Widnows HelloによるPAM認証
 yay -S wsl-hello-sudo-bin
 # version manager
 yay -S proto
@@ -220,6 +220,8 @@ yay -S neovim-git
 yay -S aws-cli-bin
 # devpod
 yay -S devpod-bin
+# 画像表示ツール
+yay -S imgcat
 ```
 
 ### wsl-hello-sudo-binのセットアップ
@@ -268,8 +270,8 @@ tmux
 
 プラグインのインストール：
 
-- __セッション保存__: `Ctrl+g` → `Ctrl+s`
-- __セッション復元__: `Ctrl+g` → `Ctrl+r`
+- **セッション保存**: `Ctrl+g` → `Ctrl+s`
+- **セッション復元**: `Ctrl+g` → `Ctrl+r`
 
 ## vdirsyncerの設定
 
