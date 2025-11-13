@@ -357,9 +357,36 @@ function Install-GlzrConfigs {
 
     foreach ($item in $items) {
         $destPath = Join-Path $glzrDestRoot $item.Name
-        Backup-AndRemoveItem -Path $destPath -Description ".glzr\$($item.Name)"
-        if (!(Set-SymbolicLinkOrCopy -SourcePath $item.FullName -DestinationPath $destPath -Description ".glzr\$($item.Name)")) {
-            return $false
+        if ($item.PSIsContainer) {
+            $shouldRecreateDirectory = $false
+            if (Test-Path $destPath) {
+                $existingDest = Get-Item $destPath -Force
+                if ($existingDest.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+                    Backup-AndRemoveItem -Path $destPath -Description ".glzr\$($item.Name)"
+                    $shouldRecreateDirectory = $true
+                }
+            } else {
+                $shouldRecreateDirectory = $true
+            }
+
+            if ($shouldRecreateDirectory) {
+                Write-ColorOutput "Ensuring destination directory exists: $destPath" "Blue"
+                New-Item -ItemType Directory -Path $destPath -Force | Out-Null
+            }
+
+            $childItems = Get-ChildItem -Path $item.FullName -Force
+            foreach ($child in $childItems) {
+                $childDestPath = Join-Path $destPath $child.Name
+                Backup-AndRemoveItem -Path $childDestPath -Description ".glzr\$($item.Name)\$($child.Name)"
+                if (!(Set-SymbolicLinkOrCopy -SourcePath $child.FullName -DestinationPath $childDestPath -Description ".glzr\$($item.Name)\$($child.Name)")) {
+                    return $false
+                }
+            }
+        } else {
+            Backup-AndRemoveItem -Path $destPath -Description ".glzr\$($item.Name)"
+            if (!(Set-SymbolicLinkOrCopy -SourcePath $item.FullName -DestinationPath $destPath -Description ".glzr\$($item.Name)")) {
+                return $false
+            }
         }
     }
 
