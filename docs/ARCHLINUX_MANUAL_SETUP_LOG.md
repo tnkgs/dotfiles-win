@@ -151,7 +151,7 @@ sudo pacman -S pacman-contrib
 # ターミナルマルチプレクサ
 sudo pacman -S tmux
 # システム情報表示
-sudo pacman -S screeenfetch
+sudo pacman -S screenfetch
 # グラフィックスドライバ
 sudo pacman -S mesa
 # Vulkan対応
@@ -159,11 +159,9 @@ sudo pacman -S vulkan-dzn
 # Vulkan対応
 sudo pacman -S vulkan-icd-loader
 # Vulkan対応
-sudo pacman -S lib32-vulkan-icd-loader
+# sudo pacman -S lib32-vulkan-icd-loader
 # クリップボード
 sudo pacman -S wl-clipboard
-# 時計
-sudo pacman -S peaclock
 # カレンダー
 sudo pacman -S khal
 # ファイル圧縮・解凍
@@ -200,6 +198,8 @@ alias yay='paru'
 ```sh
 # tmuxプラグインマネージャー
 yay -S tmux-plugin-manager
+# 時計
+yay -S peaclock
 # vdirsyncer
 yay -S vdirsyncer
 # vdirsyncerでgoogle calendarを使うために必要
@@ -211,7 +211,7 @@ yay -S wsl2-ssh-agent
 # Widnows HelloによるPAM認証
 yay -S wsl-hello-sudo-bin
 # version manager
-yay -S proto
+yay -S proto-bin
 # cursor cli
 yay -S cursor-cli
 # neovim

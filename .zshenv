@@ -4,11 +4,11 @@ if [ -f /etc/arch-release ]; then
   export GALLIUM_DRIVER=d3d12
   export LIBVA_DRIVER_NAME=d3d12
   export MESA_LOADER_DRIVER_OVERRIDE=d3d12
-  export MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA
+  # export MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA
   
   # GTK設定 - X11を優先使用
-  export GDK_BACKEND=x11
-  export GDK_GL=gl
+  # export GDK_BACKEND=x11
+  # export GDK_GL=gl
 
   # xcvxrsを使用する場合
   # # wslのhost ipを取得
