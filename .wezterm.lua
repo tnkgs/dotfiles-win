@@ -9,12 +9,14 @@ local config = wezterm.config_builder()
 -- ============================================================================
 
 -- カラースキーム: モダンでクールなテーマ
-config.color_scheme = "Catppuccin Mocha" -- ダークで落ち着いた色合い
+-- config.color_scheme = "Catppuccin Mocha" -- ダークで落ち着いた色合い
+config.color_scheme = "Cappuccin Frappe" -- 明るくて爽やかな色合い
 -- 他のおすすめ: 'Tokyo Night', 'Dracula', 'Nord', 'Gruvbox Dark'
 
 -- 半透過背景設定
-config.window_background_opacity = 0.8 -- 80%の透明度（クールで実用的）
-config.macos_window_background_blur = 20 -- Windowsでも効果あり
+config.window_background_opacity = 0.4 -- 40%の透明度（クールで実用的）
+config.win32_system_backdrop = "Acrylic" -- Windowsのアクリル効果
+-- config.window_background_opacity = 0.8 -- 80%の透明度（クールで実用的）
 
 -- フォント設定
 config.font = wezterm.font_with_fallback({
@@ -38,13 +40,6 @@ config.window_padding = {
 -- 初期ウィンドウサイズ（列数 x 行数）
 config.initial_cols = 140 -- 横幅（文字数）
 config.initial_rows = 40 -- 高さ（行数）
-
--- または、ピクセル単位で指定する場合（こちらは使わない場合コメントアウト）
--- config.initial_cols = nil
--- config.initial_rows = nil
--- config.window_frame = {
---   font_size = 11.0,
--- }
 
 -- 背景エフェクト（さらにクールに）
 config.window_background_gradient = {
@@ -104,8 +99,8 @@ config.colors = {
 -- ============================================================================
 
 -- WSL Arch Linuxをデフォルトに設定
--- config.default_prog = { 'wsl.exe', '-d', 'archlinux', '--cd', '~' }
-config.default_prog = { "pwsh.exe" }
+config.default_prog = { "wsl.exe", "-d", "archlinux", "--cd", "~" }
+-- config.default_prog = { "pwsh.exe" }
 
 -- 起動プロファイル定義
 config.launch_menu = {

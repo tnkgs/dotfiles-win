@@ -21,43 +21,43 @@ return {
             NormalFloat = { bg = "NONE" },
             FloatBorder = { bg = "NONE" },
             FloatTitle = { bg = "NONE" },
-            
+
             -- エディタ関連
             SignColumn = { bg = "NONE" },
             FoldColumn = { bg = "NONE" },
             LineNr = { bg = "NONE" },
             CursorLineNr = { bg = "NONE" },
             CursorLine = { bg = "NONE" },
-            
+
             -- Snacks Explorer（ファイルエクスプローラー）
             SnacksExplorerNormal = { bg = "NONE" },
             SnacksExplorerNormalNC = { bg = "NONE" },
-            
+
             -- Telescope
             TelescopeNormal = { bg = "NONE" },
             TelescopeBorder = { bg = "NONE" },
-            
+
             -- Popup
             Pmenu = { bg = "NONE" },
             PmenuSbar = { bg = "NONE" },
-            
+
             -- Which-Key
             WhichKeyFloat = { bg = "NONE" },
             WhichKeyBorder = { bg = "NONE" },
-            
+
             -- Lazy
             LazyNormal = { bg = "NONE" },
-            
+
             -- Mason
             MasonNormal = { bg = "NONE" },
-            
+
             -- Notify
             NotifyBackground = { bg = "NONE" },
           }
         end,
       })
-      
-      vim.cmd.colorscheme("catppuccin-mocha")
+
+      vim.cmd.colorscheme("catppuccin-frappe")
     end,
   },
 }

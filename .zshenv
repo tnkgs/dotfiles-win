@@ -7,7 +7,7 @@ if [ -f /etc/arch-release ]; then
   # export MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA
   
   # GTK設定 - X11を優先使用
-  # export GDK_BACKEND=x11
+  export GDK_BACKEND=x11
   # export GDK_GL=gl
 
   # xcvxrsを使用する場合

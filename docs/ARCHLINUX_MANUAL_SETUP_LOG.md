@@ -9,7 +9,8 @@ wsl --update --pre-release
 ## weztermの導入
 
 ```powershell
-winget install --id wez.wezterm
+scoop bucket add versions
+scoop install wezterm-nightly
 ```
 
 [WezTerm セットアップガイド](WEZTERM_SETUP.md)
@@ -127,8 +128,12 @@ LANG=en_US.UTF-8
 ## zshの導入
 
 ```sh
-sudo pacman -S zsh
+sudo pacman -S zsh zsh-syntax-highlighting zsh-autosuggestions
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# プラグインの導入
+git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
 # 以下はinstall.shで対応済みなので不要
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
@@ -175,6 +180,12 @@ sudo pacman -S mdcat
 sudo pacman -S gemini-cli
 # JSONパーサー
 sudo pacman -S jq
+# PDFビューア
+sudo pacman -S poppler
+# 画像表示ツール
+sudo pacman -S chafa
+# Azure CLI
+sudo pacman -S azure-cli
 ```
 
 ## paruの導入
@@ -222,6 +233,12 @@ yay -S aws-cli-bin
 yay -S devpod-bin
 # 画像表示ツール
 yay -S imgcat
+# Yazi (nightly)
+yay -S yazi-nightly-bin
+# ffmpeg
+yay -S ffmpeg-git
+# Discordクライアント
+yay -S discordo-git
 ```
 
 ### wsl-hello-sudo-binのセットアップ

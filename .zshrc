@@ -80,7 +80,21 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(
+  aliases
+  archlinux
+  copyfile
+  copypath
+  aws
+  docker
+  docker-compose
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
+
+# Zsh Autosuggestionsのハイライトスタイルを設定
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=250'
 
 source $ZSH/oh-my-zsh.sh
 
@@ -120,27 +134,31 @@ export PATH="$PATH:$HOME/.local/bin"
 
 # タイムゾーンを日本時間に設定
 export TZ="Asia/Tokyo"
+export LANG=ja_JP.UTF-8
 
 # WSLでSSHエージェントを有効にする
 eval "$(/usr/sbin/wsl2-ssh-agent)"
 
-# Arch Linuxの場合のみ設定
-# Ubuntuからの完全移行後はこの条件は不要
-if [ -f /etc/arch-release ]; then
-  # paruのエイリアスをyayに設定
-  if command -v paru &> /dev/null; then
-      alias yay='paru'
-  fi
-
-  # khalの補完を有効にする
-  eval "$(_KHAL_COMPLETE=zsh_source khal)"
-
-  # viのエイリアスをnvimに設定
-  alias vi='nvim'
-  alias vim='nvim'
+# paruのエイリアスをyayに設定
+if command -v paru &> /dev/null; then
+  alias yay='paru'
 fi
 
-export LANG=ja_JP.UTF-8
+# khalの補完を有効にする
+eval "$(_KHAL_COMPLETE=zsh_source khal)"
+
+# viのエイリアスをnvimに設定
+alias vi='nvim'
+alias vim='nvim'
+
+# yaziのcwd連携を有効にする
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
 
 # proto
 export PROTO_HOME="$HOME/.proto";
